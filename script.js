@@ -46,16 +46,30 @@ var diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes
 var meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 function cargarDatos() {
-    document.getElementById('btnRecargar').innerText = 'Cargando...';
+    var btn = document.getElementById('btnRecargar');
+    if (btn) {
+        btn.classList.add('is-loading');
+        btn.disabled = true;
+    }
+
     Papa.parse(CSV_URL, {
         download: true,
         header: true,
         complete: function(res) {
-            document.getElementById('btnRecargar').innerText = '↻ Recargar';
+            if (btn) {
+                btn.classList.remove('is-loading');
+                btn.disabled = false;
+            }
             var data = res.data.filter(function(row) {
                 return row.Evento && row.Fecha;
             });
             clasificarEventos(data);
+        },
+        error: function() {
+            if (btn) {
+                btn.classList.remove('is-loading');
+                btn.disabled = false;
+            }
         }
     });
 }
@@ -163,7 +177,6 @@ function clasificarEventos(eventos) {
             '</div>' +
             '<div class="col-logo">' + logoTorneo + '</div>';
 
-        // ✅ FIX: Solo creamos y agregamos el botón si NO está en vivo
         if (!estaEnVivo) {
             var btn = document.createElement('button');
             btn.className = 'btn-recordar';
@@ -200,7 +213,6 @@ function clasificarEventos(eventos) {
     });
 }
 
-// ✅ FIX: La versión de la agenda que a ti SÍ te funcionó en Android
 function descargarRecordatorio(evento, fecha, hora) {
     var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
     
@@ -245,12 +257,30 @@ function descargarRecordatorio(evento, fecha, hora) {
 function compartirApp() {
     var url = window.location.href;
     if (navigator.share) {
-        navigator.share({ title: 'Programación Deportiva', url: url });
+        navigator.share({
+            title: 'Programación Deportiva',
+            text: 'Consulta la guía de eventos deportivos en vivo y próximos.',
+            url: url
+        }).catch(function() {
+            // Cancelado por el usuario
+        });
     } else {
         navigator.clipboard.writeText(url).then(function() {
-            alert('Enlace copiado');
+            mostrarToast('Enlace copiado al portapapeles');
+        }).catch(function() {
+            mostrarToast('No se pudo copiar el enlace');
         });
     }
+}
+
+function mostrarToast(mensaje) {
+    var toast = document.getElementById('toastMessage');
+    if (!toast) return;
+    toast.innerText = mensaje;
+    toast.classList.add('show');
+    setTimeout(function() {
+        toast.classList.remove('show');
+    }, 2500);
 }
 
 cargarDatos();
