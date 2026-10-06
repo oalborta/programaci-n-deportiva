@@ -34,7 +34,7 @@ var logosTorneo = {
     "SERIE A": "https://github.com/oalborta/spg/blob/main/serieaitalia.png?raw=true",
     "UEFA CHAMPIONS LEAGUE": "https://github.com/oalborta/spg/blob/main/champions.png?raw=true",
     "COPA MUNDIAL FEMENINA - SUB 17": "https://github.com/oalborta/spg/blob/main/fem_u_17.png?raw=true",
-    "UEFA NATIONS LEAGUE": "https://github.com/oalborta/spg/blob/main/uefa_nations?raw=true",
+    "UEFA NATIONS LEAGUE": "https://github.com/oalborta/spg/blob/main/uefa_nations.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
