@@ -1,80 +1,166 @@
-* { box-sizing: border-box; }
+* { 
+    box-sizing: border-box; 
+}
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: #f0f2f5;
     margin: 0;
-    padding-top: 90px;
+    padding-top: 105px;
     padding-bottom: 60px;
     color: #333;
 }
 
-/* ─── NAVBAR ─── */
+/* ─── NAVBAR / ENCABEZADO CON MARCA ─── */
 .navbar {
     position: fixed;
     top: 0;
+    left: 0;
     width: 100%;
-    background: linear-gradient(135deg, #1a73e8, #0d47a1);
-    padding: 0 20px;
-    height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    /* Degradado deportivo solicitado: de #0033bf a #002089 hacia abajo */
+    background: linear-gradient(180deg, #0033bf 0%, #002089 100%);
+    padding: 12px 16px 8px 16px;
     z-index: 100;
-    box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 32, 137, 0.35);
 }
 
 .navbar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
 }
 
-h1 {
-    font-size: 1.1rem;
-    color: #fff;
-    margin: 0;
-    font-weight: 800;
-    letter-spacing: 1px;
+/* ─── LOGO Y MARCA EN 2 LÍNEAS ─── */
+.brand-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-logo {
+    height: 42px;
+    width: auto;
+    max-width: 75px;
+    object-fit: contain;
+    display: block;
+}
+
+.brand-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.brand-line-1 {
+    font-size: 0.95rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
 }
 
+.brand-line-2 {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #63a7f8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
 .texto-legal {
-    font-size: 0.55rem;
-    color: rgba(255, 255, 255, 0.5);
-    margin: 3px 0 0 0;
+    font-size: 0.58rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 6px 0 0 0;
     letter-spacing: 0.5px;
     text-transform: uppercase;
 }
 
-/* ─── BOTONES ─── */
+/* ─── BOTONES MEJORADOS ─── */
 .btn-group {
     display: flex;
     gap: 8px;
+    align-items: center;
 }
 
 .btn-action {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: white;
-    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    padding: 7px 12px;
     border-radius: 8px;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     cursor: pointer;
-    font-weight: 600;
-    letter-spacing: 0.3px;
+    font-weight: 700;
     transition: all 0.2s ease;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
 }
 
 .btn-action:hover {
     background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.45);
     transform: translateY(-1px);
 }
 
 .btn-action:active {
     transform: translateY(0);
+}
+
+.icon-svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Animación de giro continuo al recargar */
+.is-loading .icon-svg {
+    animation: rotar 0.8s linear infinite;
+}
+
+@keyframes rotar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ─── TOAST / NOTIFICACIÓN COPIADO ─── */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(70px);
+    background: #002089;
+    color: #ffffff;
+    border: 1px solid #63a7f8;
+    padding: 9px 18px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 9999;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* En pantallas angostas oculta la palabra y deja solo el icono */
+@media (max-width: 380px) {
+    .btn-action .btn-text {
+        display: none;
+    }
+    .btn-action {
+        padding: 8px 10px;
+    }
 }
 
 /* ─── BLOQUES ─── */
@@ -88,7 +174,7 @@ h1 {
 
 h2 {
     font-size: 0.65rem;
-    color: #999;
+    color: #888;
     margin: 0 0 12px 0;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -100,12 +186,12 @@ h2 {
 /* ─── SEPARADOR DE DÍA ─── */
 .separador-dia {
     font-size: 0.7rem;
-    color: #1a73e8;
-    font-weight: 700;
+    color: #0033bf;
+    font-weight: 800;
     padding: 10px 8px 5px 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid #e8f0fe;
+    border-bottom: 1px solid #e1e9ff;
     margin-bottom: 5px;
 }
 
@@ -113,7 +199,7 @@ h2 {
 .sin-eventos {
     text-align: center;
     padding: 25px 10px;
-    color: #ccc;
+    color: #bbb;
     font-size: 0.8rem;
 }
 
@@ -135,7 +221,7 @@ h2 {
 }
 
 .evento:hover {
-    background: #f8f9ff;
+    background: #f8faff;
 }
 
 .evento:last-child {
@@ -174,21 +260,21 @@ h2 {
     color: #222;
 }
 
-.event-info small {
-    color: #999;
+.evento-info small {
+    color: #777;
     font-size: 0.72rem;
 }
 
 .hora-destacada {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 800;
-    color: #1a73e8;
+    color: #0033bf;
 }
 
 .cuenta-regresiva {
     font-size: 0.65rem;
-    color: #4caf50;
-    font-weight: 600;
+    color: #2e7d32;
+    font-weight: 700;
     background: #e8f5e9;
     padding: 2px 8px;
     border-radius: 10px;
@@ -198,8 +284,8 @@ h2 {
 
 /* ─── BOTÓN RECORDAR ─── */
 .btn-recordar {
-    background: #e8f0fe;
-    color: #1a73e8;
+    background: #e9f0ff;
+    color: #0033bf;
     border: none;
     border-radius: 8px;
     padding: 8px 14px;
@@ -211,8 +297,8 @@ h2 {
 }
 
 .btn-recordar:hover {
-    background: #1a73e8;
-    color: white;
+    background: #0033bf;
+    color: #ffffff;
     transform: translateY(-1px);
 }
 
@@ -222,7 +308,7 @@ h2 {
 
 /* ─── EN VIVO ─── */
 #ahora .evento {
-    border-left: 4px solid #ff4444;
+    border-left: 4px solid #ff3b30;
     background: #fff5f5;
     border-radius: 0 8px 8px 0;
 }
@@ -232,8 +318,8 @@ h2 {
 }
 
 #ahora h2 {
-    color: #ff4444;
-    border-bottom-color: #ffe0e0;
+    color: #ff3b30;
+    border-bottom-color: #ffd8d6;
 }
 
 #ahora h2::before {
@@ -242,18 +328,18 @@ h2 {
 }
 
 #ahora .hora-destacada {
-    color: #ff4444;
+    color: #ff3b30;
 }
 
 @keyframes pulso {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    50% { opacity: 0.25; }
 }
 
 /* ─── FOOTER ─── */
 .footer {
     text-align: center;
     padding: 20px;
-    color: #bbb;
+    color: #aaa;
     font-size: 0.65rem;
 }
