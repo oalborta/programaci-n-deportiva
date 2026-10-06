@@ -4,21 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a73e8">
+    <meta name="theme-color" content="#0033bf">
     <title>Programación Deportiva</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
         <div class="navbar-top">
-            <h1>Programación Deportiva</h1>
+            <!-- Marca con Logo y Título en dos líneas -->
+            <div class="brand-container">
+                <img src="GO.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+                <div class="brand-info">
+                    <span class="brand-line-1">PROGRAMACIÓN</span>
+                    <span class="brand-line-2">DEPORTIVA</span>
+                </div>
+            </div>
+
+            <!-- Botones Modernos -->
             <div class="btn-group">
-                <button onclick="cargarDatos()" id="btnRecargar" class="btn-action">↻ Recargar</button>
-                <button onclick="compartirApp()" class="btn-action">↗ Compartir</button>
+                <button onclick="cargarDatos()" id="btnRecargar" class="btn-action" title="Recargar eventos" aria-label="Recargar">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                    <span class="btn-text">Recargar</span>
+                </button>
+                <button onclick="compartirApp()" id="btnCompartir" class="btn-action" title="Compartir enlace" aria-label="Compartir">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"/>
+                        <circle cx="6" cy="12" r="3"/>
+                        <circle cx="18" cy="19" r="3"/>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                    <span class="btn-text">Compartir</span>
+                </button>
             </div>
         </div>
         <p class="texto-legal">Programación sujeta a cambios</p>
     </header>
+
     <main>
         <section id="ahora" class="bloque">
             <h2>En vivo</h2>
@@ -33,7 +57,11 @@
             <div class="lista"></div>
         </section>
     </main>
-    <footer class="footer">Programación Deportiva © 2025</footer>
+
+    <!-- Notificación moderna tipo toast cuando se copia el enlace -->
+    <div id="toastMessage" class="toast">Enlace copiado al portapapeles</div>
+
+    <footer class="footer">Programación Deportiva © 2026</footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="script.js"></script>
 </body>
