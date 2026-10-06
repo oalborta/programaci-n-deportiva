@@ -37,6 +37,8 @@ var logosTorneo = {
     "UEFA NATIONS LEAGUE": "https://github.com/oalborta/spg/blob/main/uefa_nations.png?raw=true",
     "FECHA FIFA": "https://github.com/oalborta/spg/blob/main/fecha_fifa.jpeg?raw=true",
     "CONMEBOL SUB-20 FUTSAL 2026": "https://github.com/oalborta/spg/blob/main/futsal_sub_20.png?raw=true",
+    "EFL CHAMPIONSHIP": "https://github.com/oalborta/spg/blob/main/EFL-Championship-v2016.png?raw=true",
+    "LIGUE 1": "https://github.com/oalborta/spg/blob/main/Ligue_1.png?raw=true",
     "WIMBLEDON": "https://github.com/oalborta/spg/blob/main/wimbledon.png?raw=true"
 };
 
