@@ -25,70 +25,73 @@
 </head>
 <body>
     <header class="navbar">
-        <div class="navbar-top">
-            <div class="brand-container">
-                <img src="GO.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
-                <div class="brand-info">
-                    <span class="brand-line-1">PROGRAMACIÓN</span>
-                    <span class="brand-line-2">DEPORTIVA</span>
+        <div class="navbar-wrapper">
+            <div class="navbar-top">
+                <div class="brand-container">
+                    <img src="GO.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+                    <div class="brand-info">
+                        <span class="brand-line-1">PROGRAMACIÓN</span>
+                        <span class="brand-line-2">DEPORTIVA</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <!-- Botón Instalar PWA -->
+                    <button id="btnInstalar" class="btn-action btn-install" style="display: none;" title="Instalar en pantalla">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span class="btn-text">Instalar</span>
+                    </button>
+
+                    <button onclick="cargarDatos()" id="btnRecargar" class="btn-action" title="Recargar eventos">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                        <span class="btn-text">Recargar</span>
+                    </button>
+
+                    <button onclick="compartirApp()" id="btnCompartir" class="btn-action" title="Compartir enlace">
+                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"/>
+                            <circle cx="6" cy="12" r="3"/>
+                            <circle cx="18" cy="19" r="3"/>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                        </svg>
+                        <span class="btn-text">Compartir</span>
+                    </button>
                 </div>
             </div>
 
-            <div class="btn-group">
-                <!-- Botón Instalar (Aparece automáticamente si la app no está instalada) -->
-                <button id="btnInstalar" class="btn-action btn-install" style="display: none;" title="Instalar en pantalla">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
+            <!-- Fila interactiva: buscador y filtros -->
+            <div class="navbar-controles">
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
-                    <span class="btn-text">Instalar</span>
-                </button>
+                    <input type="text" id="inputBuscar" placeholder="Buscar equipo, torneo o deporte..." oninput="filtrarEventos()">
+                    <button id="btnLimpiarBusqueda" onclick="limpiarBusqueda()" style="display:none;">✕</button>
+                </div>
 
-                <button onclick="cargarDatos()" id="btnRecargar" class="btn-action" title="Recargar eventos">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                    </svg>
-                    <span class="btn-text">Recargar</span>
-                </button>
-
-                <button onclick="compartirApp()" id="btnCompartir" class="btn-action" title="Compartir enlace">
-                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="18" cy="5" r="3"/>
-                        <circle cx="6" cy="12" r="3"/>
-                        <circle cx="18" cy="19" r="3"/>
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                    </svg>
-                    <span class="btn-text">Compartir</span>
-                </button>
+                <div class="chips-container">
+                    <button class="chip active" onclick="filtrarCanal('TODOS', this)">Todos</button>
+                    <button class="chip" onclick="filtrarCanal('VIVO', this)">🔴 En Vivo</button>
+                    <button class="chip" onclick="filtrarCanal('TS', this)">Tigo Sports</button>
+                    <button class="chip" onclick="filtrarCanal('ESPN', this)">ESPN</button>
+                    <button class="chip" onclick="filtrarCanal('DSPORTS', this)">DSports</button>
+                    <button class="chip" onclick="filtrarCanal('TYC', this)">TyC Sports</button>
+                </div>
             </div>
-        </div>
 
-        <!-- Buscador integrado -->
-        <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="text" id="inputBuscar" placeholder="Buscar equipo, torneo o deporte..." oninput="filtrarEventos()">
-            <button id="btnLimpiarBusqueda" onclick="limpiarBusqueda()" style="display:none;">✕</button>
+            <p class="texto-legal">Programación sujeta a cambios</p>
         </div>
-
-        <!-- Filtros rápidos deslizables -->
-        <div class="chips-container">
-            <button class="chip active" onclick="filtrarCanal('TODOS', this)">Todos</button>
-            <button class="chip" onclick="filtrarCanal('VIVO', this)">🔴 En Vivo</button>
-            <button class="chip" onclick="filtrarCanal('TS', this)">Tigo Sports</button>
-            <button class="chip" onclick="filtrarCanal('ESPN', this)">ESPN</button>
-            <button class="chip" onclick="filtrarCanal('DSPORTS', this)">DSports</button>
-            <button class="chip" onclick="filtrarCanal('TyC', this)">TyC Sports</button>
-        </div>
-
-        <p class="texto-legal">Programación sujeta a cambios</p>
     </header>
 
-    <main id="contenedorPrincipal">
+    <main class="main-container">
         <section id="ahora" class="bloque">
             <h2>En vivo</h2>
             <div class="lista"></div>
