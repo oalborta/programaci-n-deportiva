@@ -1,4 +1,4 @@
-var CACHE_NAME = 'spg-v3';
+var CACHE_NAME = 'prog-dep-v1';
 
 self.addEventListener('install', function(event) {
   self.skipWaiting();
