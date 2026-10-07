@@ -68,12 +68,54 @@ var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
 var deferredPrompt = null;
 
+/* ─── LÓGICA MODO OSCURO ─── */
+function inicializarTema() {
+    var guardado = localStorage.getItem('spg_tema');
+    var prefiereOscuro = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (guardado === 'dark' || (!guardado && prefiereOscuro)) {
+        aplicarTemaOscuro(true);
+    } else {
+        aplicarTemaOscuro(false);
+    }
+}
+
+function alternarModoOscuro() {
+    var esOscuro = document.body.classList.contains('dark-mode');
+    aplicarTemaOscuro(!esOscuro);
+    localStorage.setItem('spg_tema', !esOscuro ? 'dark' : 'light');
+}
+
+function aplicarTemaOscuro(activar) {
+    var metaTheme = document.getElementById('themeMetaColor');
+    var txtTema = document.getElementById('txtTema');
+    var iconoTema = document.getElementById('iconoTema');
+
+    if (activar) {
+        document.body.classList.add('dark-mode');
+        if (metaTheme) metaTheme.setAttribute('content', '#0f172a');
+        if (txtTema) txtTema.innerText = 'Día';
+        if (iconoTema) {
+            // Icono de Sol
+            iconoTema.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        }
+    } else {
+        document.body.classList.remove('dark-mode');
+        if (metaTheme) metaTheme.setAttribute('content', '#0033bf');
+        if (txtTema) txtTema.innerText = 'Noche';
+        if (iconoTema) {
+            // Icono de Luna
+            iconoTema.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+        }
+    }
+}
+
+inicializarTema();
+
 function limpiarClave(texto) {
     if (!texto) return '';
     return texto.toString().replace(/[\s\-_&.]/g, '').toUpperCase().trim();
 }
 
-// Analizador flexible de fechas: soporta YYYY-MM-DD, DD/MM/YYYY o DD-MM-YYYY
 function parsearFecha(fechaStr) {
     if (!fechaStr) return null;
     var partes = fechaStr.toString().trim().split(/[-/]/);
@@ -164,7 +206,6 @@ function cargarDatos() {
             }
 
             var filas = res.data || [];
-            // Normalizar nombres de columnas por si tienen espacios o minúsculas
             var data = filas.map(function(row) {
                 var normalizado = {};
                 for (var key in row) {
@@ -274,7 +315,6 @@ function renderizarEventos() {
 
     var eventos = todosLosEventos.slice();
 
-    // Ordenar cronológicamente
     eventos.sort(function(a, b) {
         var fA = parsearFecha(a.Fecha);
         var fB = parsearFecha(b.Fecha);
@@ -314,7 +354,6 @@ function renderizarEventos() {
         }
 
         var ahora = new Date();
-        // Si el evento ya concluyó, no lo mostramos
         if (ahora > fechaFin) return;
 
         var estaEnVivo = (ahora >= fechaInicio && ahora <= fechaFin);
@@ -325,7 +364,6 @@ function renderizarEventos() {
             esHoy = true;
         }
 
-        // Filtro por canal
         if (filtroCanalActual === 'VIVO' && !estaEnVivo) return;
         if (filtroCanalActual !== 'TODOS' && filtroCanalActual !== 'VIVO') {
             var canalNorm = limpiarClave(ev.Canal);
@@ -470,7 +508,6 @@ function mostrarToast(mensaje) {
     }, 2500);
 }
 
-// Carga inicial y respaldo automático
 var cacheInicial = localStorage.getItem('spg_eventos_cache');
 if (cacheInicial) {
     try {
