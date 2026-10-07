@@ -14,7 +14,7 @@
     <link rel="apple-touch-icon" href="https://github.com/oalborta/spg/blob/main/icon-pwa.png?raw=true">
     <link rel="icon" type="image/png" href="https://github.com/oalborta/spg/blob/main/icon-pwa.png?raw=true">
 
-    <!-- Previsualización para WhatsApp y Redes (Open Graph con URL absoluta) -->
+    <!-- Previsualización para Redes y Compartir (Open Graph con URL absoluta) -->
     <meta property="og:title" content="Programación Deportiva">
     <meta property="og:description" content="Consulta los eventos deportivos en vivo y la programación de canales.">
     <meta property="og:image" content="https://github.com/oalborta/spg/blob/main/icon-pwa.png?raw=true">
@@ -42,16 +42,8 @@
                 </div>
 
                 <div class="btn-group">
-                    <!-- Botón Modo Oscuro / Claro -->
-                    <button onclick="alternarModoOscuro()" id="btnTema" class="btn-action" title="Cambiar tema">
-                        <svg id="iconoTema" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                        <span id="txtTema" class="btn-text">Noche</span>
-                    </button>
-
                     <!-- Botón Instalar PWA -->
-                    <button id="btnInstalar" class="btn-action btn-install" style="display: none;" title="Instalar en pantalla">
+                    <button id="btnInstalar" onclick="iniciarInstalacion()" class="btn-action btn-install" title="Instalar en pantalla o escritorio">
                         <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                             <polyline points="7 10 12 15 17 10"/>
@@ -60,6 +52,15 @@
                         <span class="btn-text">Instalar</span>
                     </button>
 
+                    <!-- Botón Modo Oscuro / Claro -->
+                    <button onclick="alternarModoOscuro()" id="btnTema" class="btn-action" title="Cambiar tema">
+                        <svg id="iconoTema" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                        <span id="txtTema" class="btn-text">Noche</span>
+                    </button>
+
+                    <!-- Botón Recargar -->
                     <button onclick="cargarDatos()" id="btnRecargar" class="btn-action" title="Recargar eventos">
                         <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
@@ -67,6 +68,7 @@
                         <span class="btn-text">Recargar</span>
                     </button>
 
+                    <!-- Botón Compartir -->
                     <button onclick="compartirApp()" id="btnCompartir" class="btn-action" title="Compartir enlace">
                         <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="18" cy="5" r="3"/>
