@@ -1,6 +1,5 @@
 var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
 
-// Mapa de logos de canales
 var logos = {
     "ESPN": "https://github.com/oalborta/spg/blob/main/espn.png?raw=true",
     "ESPN2": "https://github.com/oalborta/spg/blob/main/espn2.png?raw=true",
@@ -17,7 +16,6 @@ var logos = {
     "T&CSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true"
 };
 
-// Guía oficial de canales en Tigo
 var canalesTigo = {
     "TS1": "Ch. 700 / 1",
     "TS2": "Ch. 715",
@@ -130,7 +128,6 @@ window.addEventListener('beforeinstallprompt', function(e) {
     }
 });
 
-// Carga directa con la URL limpia y original de Google Sheets
 function cargarDatos() {
     var btn = document.getElementById('btnRecargar');
     if (btn) {
@@ -285,7 +282,6 @@ function renderizarEventos() {
             esHoy = true;
         }
 
-        // Filtro por canal exacto
         if (filtroCanalActual === 'VIVO' && !estaEnVivo) return;
         if (filtroCanalActual !== 'TODOS' && filtroCanalActual !== 'VIVO') {
             var canalNorm = limpiarClave(ev.Canal);
@@ -322,23 +318,25 @@ function renderizarEventos() {
         }
 
         var linkWhatsApp = obtenerLinkWhatsApp(ev.Evento, ev.Torneo, ev.Canal, numCanalTigo, ev.Fecha, ev.Hora_Inicio, estaEnVivo);
+        var linkGoogleCal = obtenerLinkGoogleCalendar(ev.Evento, ev.Torneo, ev.Canal, ev.Fecha, ev.Hora_Inicio, ev.Hora_Fin);
 
         var div = document.createElement('div');
         div.className = 'evento';
-
-        var linkGoogleCal = obtenerLinkGoogleCalendar(ev.Evento, ev.Torneo, ev.Canal, ev.Fecha, ev.Hora_Inicio, ev.Hora_Fin);
 
         var botonRecordarHtml = '';
         if (!estaEnVivo) {
             botonRecordarHtml = 
                 '<a href="' + linkGoogleCal + '" target="_blank" class="btn-recordar-pro" title="Guardar recordatorio">' +
-                    '<svg viewBox="0 0 24 24">' +
-                        '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>' +
-                        '<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>' +
-                    '</svg>' +
+                    '<svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>' +
                     'Recordar' +
                 '</a>';
         }
+
+        var botonWspHtml = 
+            '<a href="' + linkWhatsApp + '" target="_blank" class="btn-wsp" title="Compartir en WhatsApp">' +
+                '<svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.53 6.92C9.34 6.92 9.03 6.99 8.78 7.27C8.52 7.54 7.8 8.22 7.8 9.58C7.8 10.95 8.8 12.26 8.94 12.45C9.08 12.63 11 15.6 13.9 16.85C14.59 17.15 15.13 17.33 15.54 17.46C16.24 17.68 16.87 17.65 17.37 17.58C17.93 17.49 19.09 16.88 19.33 16.19C19.57 15.5 19.57 14.92 19.5 14.79C19.43 14.67 19.24 14.6 18.95 14.46C18.66 14.31 17.24 13.61 16.98 13.51C16.71 13.42 16.52 13.37 16.33 13.66C16.14 13.94 15.58 14.6 15.41 14.79C15.24 14.98 15.07 15 14.78 14.86C14.49 14.71 13.56 14.41 12.45 13.42C11.59 12.65 11 11.7 10.83 11.41C10.66 11.12 10.81 10.97 10.96 10.82C11.09 10.69 11.25 10.48 11.39 10.31C11.53 10.14 11.58 10.02 11.68 9.83C11.78 9.64 11.73 9.47 11.66 9.32C11.59 9.17 11 7.74 10.76 7.15C10.52 6.58 10.28 6.66 10.1 6.65C9.93 6.64 9.74 6.64 9.54 6.64L9.53 6.92Z"/></svg>' +
+                'Avisar' +
+            '</a>';
 
         div.innerHTML =
             '<div class="col-logo">' + 
@@ -355,13 +353,8 @@ function renderizarEventos() {
             '<div class="col-logo">' + logoTorneo + '</div>' +
             '<div class="acciones-evento">' +
                 botonRecordarHtml +
-                '<a href="' + linkWhatsApp + '" target="_blank" class="btn-wsp" title="Compartir en WhatsApp">' +
-                    '<svg viewBox="0 0 24 24">' +
-                        '<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                    </svg>
-                    Avisar
-                </a>
-            </div>';
+                botonWspHtml +
+            '</div>';
 
         if (esHoy) {
             if (estaEnVivo) {
