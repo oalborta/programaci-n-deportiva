@@ -45,6 +45,37 @@ var logosTorneo = {
 var diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 var meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
+var todosLosEventos = [];
+var filtroCanalActual = 'TODOS';
+var textoBusquedaActual = '';
+var deferredPrompt = null;
+
+// Registrar Service Worker para PWA (Instalación nativa)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').catch(function(err) {
+            console.log('SW registration error:', err);
+        });
+    });
+}
+
+// Detección automática para mostrar botón Instalar en Android/Chrome
+window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    var btnInstalar = document.getElementById('btnInstalar');
+    if (btnInstalar) {
+        btnInstalar.style.display = 'inline-flex';
+        btnInstalar.onclick = function() {
+            btnInstalar.style.display = 'none';
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(function() {
+                deferredPrompt = null;
+            });
+        };
+    }
+});
+
 function cargarDatos() {
     var btn = document.getElementById('btnRecargar');
     if (btn) {
@@ -63,15 +94,49 @@ function cargarDatos() {
             var data = res.data.filter(function(row) {
                 return row.Evento && row.Fecha;
             });
-            clasificarEventos(data);
+            todosLosEventos = data;
+            // Guardar en caché local para arranque instantáneo offline
+            localStorage.setItem('spg_eventos_cache', JSON.stringify(data));
+            renderizarEventos();
         },
         error: function() {
             if (btn) {
                 btn.classList.remove('is-loading');
                 btn.disabled = false;
             }
+            // Si falla la red, usar datos guardados previamente
+            var cached = localStorage.getItem('spg_eventos_cache');
+            if (cached) {
+                todosLosEventos = JSON.parse(cached);
+                renderizarEventos();
+                mostrarToast('Sin conexión: mostrando datos guardados');
+            }
         }
     });
+}
+
+function filtrarCanal(canal, elemento) {
+    filtroCanalActual = canal;
+    document.querySelectorAll('.chip').forEach(function(c) {
+        c.classList.remove('active');
+    });
+    elemento.classList.add('active');
+    renderizarEventos();
+}
+
+function filtrarEventos() {
+    var val = document.getElementById('inputBuscar').value;
+    textoBusquedaActual = val.toLowerCase().trim();
+    var btnClean = document.getElementById('btnLimpiarBusqueda');
+    btnClean.style.display = textoBusquedaActual ? 'block' : 'none';
+    renderizarEventos();
+}
+
+function limpiarBusqueda() {
+    document.getElementById('inputBuscar').value = '';
+    textoBusquedaActual = '';
+    document.getElementById('btnLimpiarBusqueda').style.display = 'none';
+    renderizarEventos();
 }
 
 function obtenerCuentaRegresiva(fecha, hora) {
@@ -99,7 +164,7 @@ function fechaLegible(fecha) {
     return diasSemana[d.getDay()] + ' ' + d.getDate() + ' ' + meses[d.getMonth()];
 }
 
-function clasificarEventos(eventos) {
+function renderizarEventos() {
     document.querySelectorAll('.lista').forEach(function(c) {
         c.innerHTML = '';
     });
@@ -107,6 +172,8 @@ function clasificarEventos(eventos) {
     var hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
     var hoyTs = hoy.getTime();
+
+    var eventos = todosLosEventos.slice();
 
     eventos.sort(function(a, b) {
         var pA = a.Fecha.split('-');
@@ -126,6 +193,12 @@ function clasificarEventos(eventos) {
     eventos.forEach(function(ev) {
         if (!ev.Fecha || !ev.Hora_Inicio || !ev.Hora_Fin) return;
 
+        // Filtro de búsqueda por texto
+        if (textoBusquedaActual) {
+            var strTotal = (ev.Evento + ' ' + (ev.Torneo || '') + ' ' + (ev.Canal || '')).toLowerCase();
+            if (strTotal.indexOf(textoBusquedaActual) === -1) return;
+        }
+
         var partes = ev.Fecha.split('-');
         var fechaEvento = new Date(partes[0], partes[1] - 1, partes[2]);
         var fechaTs = fechaEvento.getTime();
@@ -143,7 +216,6 @@ function clasificarEventos(eventos) {
         }
 
         var ahora = new Date();
-
         if (ahora > fechaFin) return;
 
         var estaEnVivo = (ahora >= fechaInicio && ahora <= fechaFin);
@@ -151,6 +223,13 @@ function clasificarEventos(eventos) {
 
         if (!esHoy && estaEnVivo) {
             esHoy = true;
+        }
+
+        // Filtro por Chip
+        if (filtroCanalActual === 'VIVO' && !estaEnVivo) return;
+        if (filtroCanalActual !== 'TODOS' && filtroCanalActual !== 'VIVO') {
+            var cUpper = (ev.Canal || '').toUpperCase();
+            if (cUpper.indexOf(filtroCanalActual) === -1) return;
         }
 
         var logoCanal = logos[ev.Canal]
@@ -166,26 +245,30 @@ function clasificarEventos(eventos) {
 
         var div = document.createElement('div');
         div.className = 'evento';
+
+        // URL directa a Google Calendar
+        var linkGoogleCal = obtenerLinkGoogleCalendar(ev.Evento, ev.Torneo, ev.Canal, ev.Fecha, ev.Hora_Inicio, ev.Hora_Fin);
+
+        var htmlAcciones = '';
+        if (!estaEnVivo) {
+            htmlAcciones = 
+                '<div class="acciones-evento">' +
+                    '<a href="' + linkGoogleCal + '" target="_blank" class="btn-calendar-g" title="Agendar en Google Calendar">🗓 Recordar</a>' +
+                    '<button class="btn-ics-opt" onclick="descargarRecordatorio(\'' + ev.Evento.replace(/'/g, "\\'") + '\', \'' + ev.Fecha + '\', \'' + ev.Hora_Inicio + '\')">.ICS</button>' +
+                '</div>';
+        }
+
         div.innerHTML =
             '<div class="col-logo">' + logoCanal + '</div>' +
-            '<div class="evento-info" style="flex-grow:1;">' +
-                '<strong>' + ev.Evento + '</strong><br>' +
+            '<div class="evento-info">' +
+                '<strong>' + ev.Evento + '</strong>' +
                 '<small>' + (ev.Torneo || '') + '</small><br>' +
                 '<span class="hora-destacada">' + ev.Hora_Inicio + '</span>' +
                 '<small> - ' + ev.Hora_Fin + '</small>' +
                 cuentaHtml +
             '</div>' +
-            '<div class="col-logo">' + logoTorneo + '</div>';
-
-        if (!estaEnVivo) {
-            var btn = document.createElement('button');
-            btn.className = 'btn-recordar';
-            btn.innerText = 'Recordar';
-            btn.onclick = function() {
-                descargarRecordatorio(ev.Evento, ev.Fecha, ev.Hora_Inicio);
-            };
-            div.appendChild(btn);
-        }
+            '<div class="col-logo">' + logoTorneo + '</div>' +
+            htmlAcciones;
 
         if (esHoy) {
             if (estaEnVivo) {
@@ -208,19 +291,35 @@ function clasificarEventos(eventos) {
     ['ahora', 'hoy', 'proximos'].forEach(function(id) {
         var lista = document.querySelector('#' + id + ' .lista');
         if (lista.children.length === 0) {
-            lista.innerHTML = '<div class="sin-eventos">Sin eventos</div>';
+            lista.innerHTML = '<div class="sin-eventos">Sin eventos para mostrar</div>';
         }
     });
 }
 
+// Generador de enlace directo a Google Calendar (Abre la app al instante)
+function obtenerLinkGoogleCalendar(evento, torneo, canal, fecha, horaInicio, horaFin) {
+    var pF = fecha.split('-');
+    var pHi = horaInicio.split(':');
+    var pHf = horaFin.split(':');
+
+    var dStart = new Date(pF[0], pF[1] - 1, pF[2], parseInt(pHi[0]), parseInt(pHi[1]));
+    var dEnd = new Date(pF[0], pF[1] - 1, pF[2], parseInt(pHf[0]), parseInt(pHf[1]));
+    if (dEnd <= dStart) dEnd.setDate(dEnd.getDate() + 1);
+
+    var isoStart = dStart.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    var isoEnd = dEnd.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    var titulo = encodeURIComponent(evento + ' (' + (torneo || 'Deportes') + ')');
+    var detalles = encodeURIComponent('Transmite: ' + (canal || 'Ver guía') + '\nProgramación Deportiva');
+
+    return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + titulo + '&dates=' + isoStart + '/' + isoEnd + '&details=' + detalles;
+}
+
+// Descarga tradicional en archivo .ICS
 function descargarRecordatorio(evento, fecha, hora) {
     var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
-    
-    fecha = fecha.trim();
-    hora = hora.trim();
-
-    var partesFecha = fecha.split('-');
-    var partesHora = hora.split(':');
+    var partesFecha = fecha.trim().split('-');
+    var partesHora = hora.trim().split(':');
 
     var anio = parseInt(partesFecha[0]);
     var mes = parseInt(partesFecha[1]) - 1; 
@@ -248,7 +347,7 @@ function descargarRecordatorio(evento, fecha, hora) {
     var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     var link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'recordatorio_' + anio + mes + dia + '.ics';
+    link.download = 'evento_' + anio + mes + dia + '.ics';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -261,9 +360,7 @@ function compartirApp() {
             title: 'Programación Deportiva',
             text: 'Consulta la guía de eventos deportivos en vivo y próximos.',
             url: url
-        }).catch(function() {
-            // Cancelado por el usuario
-        });
+        }).catch(function() {});
     } else {
         navigator.clipboard.writeText(url).then(function() {
             mostrarToast('Enlace copiado al portapapeles');
@@ -281,6 +378,13 @@ function mostrarToast(mensaje) {
     setTimeout(function() {
         toast.classList.remove('show');
     }, 2500);
+}
+
+// Cargar desde caché al inicio si existe para arranque instantáneo
+var cacheInicial = localStorage.getItem('spg_eventos_cache');
+if (cacheInicial) {
+    todosLosEventos = JSON.parse(cacheInicial);
+    renderizarEventos();
 }
 
 cargarDatos();
