@@ -2,7 +2,6 @@
   "name": "Programación Deportiva",
   "short_name": "Deportes",
   "description": "Guía de eventos deportivos en vivo y próximos",
-  "id": "/spg/",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
