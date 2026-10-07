@@ -11,8 +11,8 @@ var logos = {
     "ESPN7": "https://github.com/oalborta/spg/blob/main/espn7.png?raw=true",
     "TS1": "https://github.com/oalborta/spg/blob/main/ts1.png?raw=true",
     "TS2": "https://github.com/oalborta/spg/blob/main/ts2.png?raw=true",
-    "DSPORTS": "https://github.com/oalborta/spg/blob/main/DSPORTS.png?raw=true",
-    "DSPORTS2": "https://github.com/oalborta/spg/blob/main/DSPORTS2.png?raw=true",
+    "": "https://github.com/oalborta/spg/blob/main/.png?raw=true",
+    "2": "https://github.com/oalborta/spg/blob/main/2.png?raw=true",
     "TYCSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true",
     "T&CSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true"
 };
@@ -64,8 +64,8 @@ function buscarLogoCanal(nombreCanal) {
     if (logos[clave]) return logos[clave];
 
     // Búsquedas tolerantes
-    if (clave.indexOf('DSPORTS2') !== -1 || clave.indexOf('DIRECTV2') !== -1) return logos['DSPORTS2'];
-    if (clave.indexOf('DSPORTS') !== -1 || clave.indexOf('DIRECTV') !== -1) return logos['DSPORTS'];
+    if (clave.indexOf('2') !== -1 || clave.indexOf('DIRECTV2') !== -1) return logos['2'];
+    if (clave.indexOf('') !== -1 || clave.indexOf('DIRECTV') !== -1) return logos[''];
     if (clave.indexOf('TYC') !== -1) return logos['TYCSPORTS'];
     if (clave.indexOf('TS1') !== -1) return logos['TS1'];
     if (clave.indexOf('TS2') !== -1) return logos['TS2'];
