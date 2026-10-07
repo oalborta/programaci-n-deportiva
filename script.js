@@ -1,6 +1,6 @@
 var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
 
-// Mapa de logos de canales (llaves normalizadas: sin espacios ni signos y en mayúsculas)
+// Mapa de logos de canales
 var logos = {
     "ESPN": "https://github.com/oalborta/spg/blob/main/espn.png?raw=true",
     "ESPN2": "https://github.com/oalborta/spg/blob/main/espn2.png?raw=true",
@@ -15,6 +15,23 @@ var logos = {
     "DSPORTS2": "https://github.com/oalborta/spg/blob/main/DSPORTS2.png?raw=true",
     "TYCSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true",
     "T&CSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true"
+};
+
+// Guía oficial de canales en la grilla de Tigo
+var canalesTigo = {
+    "TS1": "Ch. 700 / 1",
+    "TS2": "Ch. 715",
+    "ESPN": "Ch. 508",
+    "ESPN2": "Ch. 509",
+    "ESPN3": "Ch. 510",
+    "ESPN4": "Ch. 511",
+    "ESPN5": "Ch. 512",
+    "ESPN6": "Ch. 513",
+    "ESPN7": "Ch. 514",
+    "TYCSPORTS": "Ch. 708",
+    "T&CSPORTS": "Ch. 708",
+    "DSPORTS": "DGO / App",
+    "DSPORTS2": "DGO / App"
 };
 
 var logosTorneo = {
@@ -52,7 +69,6 @@ var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
 var deferredPrompt = null;
 
-// Normalización ultra-flexible (ignora espacios, guiones, puntos y mayúsculas/minúsculas)
 function limpiarClave(texto) {
     if (!texto) return '';
     return texto.toString().replace(/[\s\-_&.]/g, '').toUpperCase().trim();
@@ -62,7 +78,6 @@ function buscarLogoCanal(nombreCanal) {
     if (!nombreCanal) return null;
     var clave = limpiarClave(nombreCanal);
 
-    // Detección directa de DSports
     if (clave === 'DSPORTS2' || clave === 'DIRECTV2' || clave.indexOf('DSPORTS2') !== -1 || clave.indexOf('DIRECTVSPORTS2') !== -1) {
         return logos['DSPORTS2'];
     }
@@ -77,6 +92,18 @@ function buscarLogoCanal(nombreCanal) {
     if (clave.indexOf('TS2') !== -1) return logos['TS2'];
 
     return null;
+}
+
+function obtenerNumeroCanalTigo(nombreCanal) {
+    if (!nombreCanal) return '';
+    var clave = limpiarClave(nombreCanal);
+    if (canalesTigo[clave]) return canalesTigo[clave];
+    if (clave.indexOf('TS1') !== -1 || clave === 'TS') return canalesTigo['TS1'];
+    if (clave.indexOf('TS2') !== -1) return canalesTigo['TS2'];
+    if (clave.indexOf('TYC') !== -1) return canalesTigo['TYCSPORTS'];
+    if (clave.indexOf('DSPORTS2') !== -1) return canalesTigo['DSPORTS2'];
+    if (clave.indexOf('DSPORTS') !== -1) return canalesTigo['DSPORTS'];
+    return '';
 }
 
 if ('serviceWorker' in navigator) {
@@ -183,6 +210,18 @@ function obtenerCuentaRegresiva(fecha, hora) {
     return 'En ' + dias + ' días';
 }
 
+// Función 4: Minutos transcurridos en Vivo
+function obtenerTiempoTranscurrido(fechaInicio) {
+    var ahora = new Date();
+    var diff = ahora - fechaInicio;
+    var mins = Math.floor(diff / 60000);
+    if (mins < 0) mins = 0;
+    if (mins < 60) return mins + "'";
+    var hrs = Math.floor(mins / 60);
+    var restoMins = mins % 60;
+    return hrs + 'h ' + restoMins + 'm';
+}
+
 function fechaLegible(fecha) {
     var partes = fecha.split('-');
     var d = new Date(partes[0], partes[1] - 1, partes[2]);
@@ -249,26 +288,27 @@ function renderizarEventos() {
             esHoy = true;
         }
 
-        // ─── FILTRO EXACTO POR BOTÓN DE CANAL ───
+        // Filtro por canal exacto
         if (filtroCanalActual === 'VIVO' && !estaEnVivo) return;
         if (filtroCanalActual !== 'TODOS' && filtroCanalActual !== 'VIVO') {
             var canalNorm = limpiarClave(ev.Canal);
 
             if (filtroCanalActual === 'TS') {
-                // Tigo Sports: debe contener TS o TIGO, pero EXCLUIR explícitamente DSPORTS
                 var esTigo = (canalNorm.indexOf('TS') !== -1 || canalNorm.indexOf('TIGO') !== -1) && (canalNorm.indexOf('DSPORTS') === -1);
                 if (!esTigo) return;
             } else if (filtroCanalActual === 'DSPORTS') {
-                // DSports: coincide con DSPORTS o DIRECTV
                 var esDsports = (canalNorm.indexOf('DSPORTS') !== -1 || canalNorm.indexOf('DIRECTV') !== -1);
                 if (!esDsports) return;
             } else {
-                // ESPN, TYC, etc.
                 if (canalNorm.indexOf(filtroCanalActual) === -1) return;
             }
         }
 
+        // Logo y Número de Canal Tigo
         var urlLogoCanal = buscarLogoCanal(ev.Canal);
+        var numCanalTigo = obtenerNumeroCanalTigo(ev.Canal);
+        var badgeNumeroHtml = numCanalTigo ? '<span class="canal-numero">' + numCanalTigo + '</span>' : '';
+
         var logoCanal = urlLogoCanal
             ? '<img src="' + urlLogoCanal + '" class="logo">'
             : '<span class="badge">' + (ev.Canal ? ev.Canal.substring(0, 4).toUpperCase() : '') + '</span>';
@@ -277,17 +317,26 @@ function renderizarEventos() {
             ? '<img src="' + logosTorneo[ev.Torneo] + '" class="logo">'
             : '<span class="badge">' + (ev.Torneo ? ev.Torneo.substring(0, 3).toUpperCase() : '') + '</span>';
 
-        var cuenta = obtenerCuentaRegresiva(ev.Fecha, ev.Hora_Inicio);
-        var cuentaHtml = cuenta ? '<div class="cuenta-regresiva">' + cuenta + '</div>' : '';
+        // Estado temporal: Si está en vivo muestra minuto transcurrido, si no cuenta regresiva
+        var indicadorTiempoHtml = '';
+        if (estaEnVivo) {
+            indicadorTiempoHtml = '<div class="minuto-vivo">● En juego (' + obtenerTiempoTranscurrido(fechaInicio) + ')</div>';
+        } else {
+            var cuenta = obtenerCuentaRegresiva(ev.Fecha, ev.Hora_Inicio);
+            indicadorTiempoHtml = cuenta ? '<div class="cuenta-regresiva">' + cuenta + '</div>' : '';
+        }
+
+        // Función 1: Enlace para compartir en WhatsApp
+        var linkWhatsApp = obtenerLinkWhatsApp(ev.Evento, ev.Torneo, ev.Canal, numCanalTigo, ev.Fecha, ev.Hora_Inicio, estaEnVivo);
 
         var div = document.createElement('div');
         div.className = 'evento';
 
         var linkGoogleCal = obtenerLinkGoogleCalendar(ev.Evento, ev.Torneo, ev.Canal, ev.Fecha, ev.Hora_Inicio, ev.Hora_Fin);
 
-        var htmlBotonRecordar = '';
+        var botonRecordarHtml = '';
         if (!estaEnVivo) {
-            htmlBotonRecordar = 
+            botonRecordarHtml = 
                 '<a href="' + linkGoogleCal + '" target="_blank" class="btn-recordar-pro" title="Guardar recordatorio">' +
                     '<svg viewBox="0 0 24 24">' +
                         '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>' +
@@ -298,16 +347,27 @@ function renderizarEventos() {
         }
 
         div.innerHTML =
-            '<div class="col-logo">' + logoCanal + '</div>' +
+            '<div class="col-logo">' + 
+                logoCanal + 
+                badgeNumeroHtml + 
+            '</div>' +
             '<div class="evento-info">' +
                 '<strong>' + ev.Evento + '</strong>' +
                 '<small>' + (ev.Torneo || '') + '</small><br>' +
                 '<span class="hora-destacada">' + ev.Hora_Inicio + '</span>' +
                 '<small> - ' + ev.Hora_Fin + '</small>' +
-                cuentaHtml +
+                indicadorTiempoHtml +
             '</div>' +
             '<div class="col-logo">' + logoTorneo + '</div>' +
-            htmlBotonRecordar;
+            '<div class="acciones-evento">' +
+                botonRecordarHtml +
+                '<a href="' + linkWhatsApp + '" target="_blank" class="btn-wsp" title="Compartir en WhatsApp">' +
+                    '<svg viewBox="0 0 24 24">' +
+                        '<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    Avisar
+                </a>' +
+            '</div>';
 
         if (esHoy) {
             if (estaEnVivo) {
@@ -335,6 +395,14 @@ function renderizarEventos() {
     });
 }
 
+// Generador de enlace para compartir en WhatsApp
+function obtenerLinkWhatsApp(evento, torneo, canal, numCanal, fecha, hora, estaEnVivo) {
+    var estadoTxt = estaEnVivo ? '🔴 *¡EN VIVO AHORA!*' : '📅 *' + fechaLegible(fecha) + ' - ' + hora + '*';
+    var canalTxt = canal ? (canal + (numCanal ? ' (' + numCanal + ')' : '')) : 'Tigo Sports';
+    var msg = estadoTxt + '\n🏆 *' + evento + '* (' + (torneo || 'Deportes') + ')\n📺 *Canal:* ' + canalTxt + '\n\nMiralo en la app: ' + window.location.href;
+    return 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+}
+
 function obtenerLinkGoogleCalendar(evento, torneo, canal, fecha, horaInicio, horaFin) {
     var pF = fecha.split('-');
     var pHi = horaInicio.split(':');
@@ -348,7 +416,7 @@ function obtenerLinkGoogleCalendar(evento, torneo, canal, fecha, horaInicio, hor
     var isoEnd = dEnd.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
     var titulo = encodeURIComponent(evento + ' (' + (torneo || 'Deportes') + ')');
-    var detalles = encodeURIComponent('Transmite: ' + (canal || 'Ver guía') + '\nProgramación Deportiva');
+    var detalles = encodeURIComponent('Transmite: ' + (canal || 'Tigo Sports') + '\nProgramación Deportiva');
 
     return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + titulo + '&dates=' + isoStart + '/' + isoEnd + '&details=' + detalles;
 }
@@ -387,4 +455,5 @@ if (cacheInicial) {
 }
 
 cargarDatos();
+// Refresca cada minuto para actualizar automáticamente el contador de tiempo jugado
 setInterval(cargarDatos, 60000);
