@@ -6,7 +6,7 @@
     
     <!-- Metadatos PWA y Apple -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0033bf">
+    <meta name="theme-color" content="#0033bf" id="themeMetaColor">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -42,6 +42,14 @@
                 </div>
 
                 <div class="btn-group">
+                    <!-- Botón Modo Oscuro / Claro -->
+                    <button onclick="alternarModoOscuro()" id="btnTema" class="btn-action" title="Cambiar tema">
+                        <svg id="iconoTema" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                        </svg>
+                        <span id="txtTema" class="btn-text">Noche</span>
+                    </button>
+
                     <!-- Botón Instalar PWA -->
                     <button id="btnInstalar" class="btn-action btn-install" style="display: none;" title="Instalar en pantalla">
                         <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
