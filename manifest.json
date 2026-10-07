@@ -2,22 +2,22 @@
   "name": "Programación Deportiva",
   "short_name": "Deportes",
   "description": "Guía de eventos deportivos en vivo y próximos",
-  "id": "/spg/",
-  "start_url": "/spg/",
-  "scope": "/spg/",
+  "id": "/programaci-n-deportiva/",
+  "start_url": "/programaci-n-deportiva/",
+  "scope": "/programaci-n-deportiva/",
   "display": "standalone",
   "background_color": "#002089",
   "theme_color": "#0033bf",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/oalborta/spg/main/icon-pwa.png",
+      "src": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/icon-pwa.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://raw.githubusercontent.com/oalborta/spg/main/icon-pwa.png",
+      "src": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/icon-pwa.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
