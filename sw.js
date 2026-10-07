@@ -1,4 +1,4 @@
-const CACHE_NAME = 'spg-v3-clean';
+const CACHE_NAME = 'spg-v4-clean';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
@@ -14,8 +14,7 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Las llamadas a Google Sheets van siempre 100% directas a internet
-  if (e.request.url.includes('google') || e.request.url.includes('pub?output=csv')) {
+  if (e.request.url.includes('docs.google.com') || e.request.url.includes('pub?output=csv')) {
     return;
   }
   e.respondWith(
