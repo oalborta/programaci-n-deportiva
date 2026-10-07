@@ -1,23 +1,48 @@
-const CACHE_NAME = 'spg-v4-clean';
+var CACHE_NAME = 'spg-v2';
+var ASSETS = [
+  './',
+  './index.html',
+  './style.css',
+  './script.js',
+  './manifest.json'
+];
 
-self.addEventListener('install', (e) => {
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(keys.map((k) => caches.delete(k)));
+self.addEventListener('install', function(event) {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.addAll(ASSETS);
+    }).then(function() {
+      return self.skipWaiting();
     })
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch', (e) => {
-  if (e.request.url.includes('docs.google.com') || e.request.url.includes('pub?output=csv')) {
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(keys) {
+      return Promise.all(
+        keys.map(function(key) {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(function() {
+      return self.clients.claim();
+    })
+  );
+});
+
+self.addEventListener('fetch', function(event) {
+  // Las peticiones a Google Sheets (CSV) y logos externos siempre van a la red directo
+  if (event.request.url.includes('docs.google.com') || event.request.url.includes('github.com')) {
+    event.respondWith(fetch(event.request));
     return;
   }
-  e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+
+  event.respondWith(
+    fetch(event.request).catch(function() {
+      return caches.match(event.request);
+    })
   );
 });
