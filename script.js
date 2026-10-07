@@ -1,6 +1,6 @@
 var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
 
-// Mapa de logos de canales (normalizado sin espacios ni caracteres raros)
+// Mapa de logos de canales (llaves normalizadas: sin espacios ni signos y en mayúsculas)
 var logos = {
     "ESPN": "https://github.com/oalborta/spg/blob/main/espn.png?raw=true",
     "ESPN2": "https://github.com/oalborta/spg/blob/main/espn2.png?raw=true",
@@ -52,6 +52,7 @@ var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
 var deferredPrompt = null;
 
+// Normaliza texto: quita espacios y caracteres raros para comparar siempre seguro
 function limpiarClave(texto) {
     if (!texto) return '';
     return texto.toString().replace(/[\s\-_&]/g, '').toUpperCase();
@@ -62,6 +63,7 @@ function buscarLogoCanal(nombreCanal) {
     var clave = limpiarClave(nombreCanal);
     if (logos[clave]) return logos[clave];
 
+    // Búsquedas tolerantes
     if (clave.indexOf('DSPORTS2') !== -1 || clave.indexOf('DIRECTV2') !== -1) return logos['DSPORTS2'];
     if (clave.indexOf('DSPORTS') !== -1 || clave.indexOf('DIRECTV') !== -1) return logos['DSPORTS'];
     if (clave.indexOf('TYC') !== -1) return logos['TYCSPORTS'];
@@ -264,7 +266,6 @@ function renderizarEventos() {
 
         var linkGoogleCal = obtenerLinkGoogleCalendar(ev.Evento, ev.Torneo, ev.Canal, ev.Fecha, ev.Hora_Inicio, ev.Hora_Fin);
 
-        // Botón único con icono SVG elegante de campana/alarma
         var htmlBotonRecordar = '';
         if (!estaEnVivo) {
             htmlBotonRecordar = 
