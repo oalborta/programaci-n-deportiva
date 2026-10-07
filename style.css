@@ -61,7 +61,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: var(--bg-body);
     margin: 0;
-    padding-top: 205px;
+    padding-top: 200px;
     padding-bottom: 60px;
     color: var(--text-main);
     transition: background 0.3s ease, color 0.3s ease;
@@ -74,7 +74,7 @@ body {
     left: 0;
     width: 100%;
     background: var(--nav-bg);
-    padding: 12px 18px 8px 18px;
+    padding: 10px 14px 8px 14px;
     z-index: 100;
     box-shadow: 0 4px 20px var(--nav-shadow);
     transition: background 0.3s ease;
@@ -84,33 +84,29 @@ body {
     max-width: 920px;
     margin: 0 auto;
     width: 100%;
-    padding: 0 6px;
 }
 
 .navbar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 /* ─── MARCA ─── */
 .brand-container {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding-left: 4px;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .brand-logo {
-    height: 48px;
+    height: 42px;
     width: auto;
-    max-width: 80px;
+    max-width: 70px;
     object-fit: contain;
     display: block;
-    background: none !important;
-    border: none !important;
-    outline: none !important;
 }
 
 .brand-info {
@@ -120,47 +116,48 @@ body {
 }
 
 .brand-line-1 {
-    font-size: 1.08rem;
+    font-size: 0.95rem;
     font-weight: 900;
     color: #ffffff;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
 }
 
 .brand-line-2 {
-    font-size: 0.92rem;
+    font-size: 0.82rem;
     font-weight: 800;
     color: #63a7f8;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    margin-top: 3px;
+    margin-top: 2px;
 }
 
 .texto-legal {
     font-size: 0.58rem;
     color: rgba(255, 255, 255, 0.65);
-    margin: 6px 0 0 0;
+    margin: 4px 0 0 0;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     text-align: right;
 }
 
-/* ─── BOTONES SUPERIORES ─── */
+/* ─── BOTONES SUPERIORES (AJUSTADOS PARA MÓVIL) ─── */
 .btn-group {
     display: flex;
-    gap: 6px;
+    gap: 5px;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .btn-action {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 4px;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.28);
     color: #ffffff;
-    padding: 7px 11px;
+    padding: 6px 9px;
     border-radius: 8px;
     font-size: 0.72rem;
     cursor: pointer;
@@ -206,14 +203,14 @@ body {
 
 .search-box {
     position: relative;
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex;
     align-items: center;
 }
 
 .search-box input {
     width: 100%;
-    padding: 9px 34px 9px 34px;
+    padding: 8px 32px;
     border-radius: 20px;
     border: 1px solid transparent;
     background: var(--input-bg);
@@ -251,7 +248,7 @@ body.dark-mode .search-box input {
     display: flex;
     gap: 6px;
     overflow-x: auto;
-    padding: 8px 0 2px 0;
+    padding: 7px 0 2px 0;
     scrollbar-width: none;
 }
 
@@ -264,7 +261,7 @@ body.dark-mode .search-box input {
     background: rgba(255, 255, 255, 0.14);
     border: 1px solid rgba(255, 255, 255, 0.25);
     color: #fff;
-    padding: 5px 12px;
+    padding: 5px 11px;
     border-radius: 16px;
     font-size: 0.68rem;
     font-weight: 700;
@@ -329,9 +326,9 @@ h2 {
 .evento {
     display: flex;
     align-items: center;
-    padding: 10px 10px;
+    padding: 10px;
     border-bottom: 1px solid var(--border-item);
-    gap: 12px;
+    gap: 10px;
     transition: background 0.15s ease;
     border-radius: 8px;
 }
@@ -462,13 +459,13 @@ body.dark-mode .minuto-vivo {
 .btn-recordar-pro {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     background: var(--btn-recordar-bg);
     color: var(--btn-recordar-color);
     border: 1px solid var(--btn-recordar-border);
     border-radius: 8px;
-    padding: 6px 10px;
-    font-size: 0.68rem;
+    padding: 5px 8px;
+    font-size: 0.66rem;
     cursor: pointer;
     font-weight: 700;
     text-decoration: none;
@@ -477,8 +474,8 @@ body.dark-mode .minuto-vivo {
 }
 
 .btn-recordar-pro svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
     stroke: currentColor;
     stroke-width: 2.2;
     fill: none;
@@ -488,7 +485,6 @@ body.dark-mode .minuto-vivo {
     background: #0033bf;
     color: #ffffff;
     border-color: #0033bf;
-    transform: translateY(-1px);
 }
 
 body.dark-mode .btn-recordar-pro:hover {
@@ -506,7 +502,7 @@ body.dark-mode .btn-recordar-pro:hover {
     border: 1px solid #c8e6c9;
     border-radius: 8px;
     padding: 5px 8px;
-    font-size: 0.65rem;
+    font-size: 0.66rem;
     cursor: pointer;
     font-weight: 700;
     text-decoration: none;
@@ -515,8 +511,8 @@ body.dark-mode .btn-recordar-pro:hover {
 }
 
 .btn-wsp svg {
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
     fill: #2e7d32;
 }
 
@@ -524,7 +520,6 @@ body.dark-mode .btn-recordar-pro:hover {
     background: #25d366;
     color: #ffffff;
     border-color: #25d366;
-    transform: translateY(-1px);
 }
 
 .btn-wsp:hover svg {
@@ -541,7 +536,7 @@ body.dark-mode .btn-wsp svg {
     fill: #4ade80;
 }
 
-/* ─── ESTILOS EN VIVO ─── */
+/* ─── EN VIVO ─── */
 #ahora .evento {
     border-left: 4px solid #ff3b30;
     background: var(--vivo-card-bg);
@@ -604,17 +599,17 @@ body.dark-mode .toast {
     font-size: 0.65rem;
 }
 
-/* ─── ADAPTACIÓN ESCRITORIO (PC) ─── */
+/* ─── ADAPTACIÓN RESPONSIVA ─── */
 @media (min-width: 768px) {
     body {
-        padding-top: 160px;
+        padding-top: 155px;
     }
 
     .navbar-controles {
         flex-direction: row;
         align-items: center;
-        gap: 16px;
-        margin-top: 10px;
+        gap: 14px;
+        margin-top: 8px;
     }
 
     .search-box {
@@ -633,18 +628,26 @@ body.dark-mode .toast {
         gap: 8px;
     }
 
-    .btn-action {
-        padding: 7px 14px;
-        font-size: 0.74rem;
-    }
-
     .bloque {
         padding: 20px;
     }
 }
 
-@media (max-width: 420px) {
+/* En teléfonos: los botones conservan su icono visible y texto compacto */
+@media (max-width: 600px) {
+    .btn-action {
+        padding: 6px 8px;
+    }
+    .brand-line-1 {
+        font-size: 0.85rem;
+    }
+    .brand-line-2 {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 380px) {
     .btn-action .btn-text {
-        display: none;
+        display: none; /* Solo en pantallas extremadamente estrechas se oculta el texto para no empujar botones */
     }
 }
