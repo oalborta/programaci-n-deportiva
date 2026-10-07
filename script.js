@@ -1,18 +1,20 @@
 var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
 
+// Mapa de logos de canales (normalizado sin espacios ni caracteres raros)
 var logos = {
     "ESPN": "https://github.com/oalborta/spg/blob/main/espn.png?raw=true",
-    "ESPN 2": "https://github.com/oalborta/spg/blob/main/espn2.png?raw=true",
-    "ESPN 3": "https://github.com/oalborta/spg/blob/main/espn3.png?raw=true",
-    "ESPN 4": "https://github.com/oalborta/spg/blob/main/espn4.png?raw=true",
-    "ESPN 5": "https://github.com/oalborta/spg/blob/main/espn5.png?raw=true",
-    "ESPN 6": "https://github.com/oalborta/spg/blob/main/espn6.png?raw=true",
-    "ESPN 7": "https://github.com/oalborta/spg/blob/main/espn7.png?raw=true",
-    "TS 1": "https://github.com/oalborta/spg/blob/main/ts1.png?raw=true",
-    "D SPORTS": "https://github.com/oalborta/spg/blob/main/DSPORTS.png?raw=true",
-    "D SPORTS 2": "https://github.com/oalborta/spg/blob/main/DSPORTS2.png?raw=true",
-    "T&C SPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true",
-    "TS 2": "https://github.com/oalborta/spg/blob/main/ts2.png?raw=true"
+    "ESPN2": "https://github.com/oalborta/spg/blob/main/espn2.png?raw=true",
+    "ESPN3": "https://github.com/oalborta/spg/blob/main/espn3.png?raw=true",
+    "ESPN4": "https://github.com/oalborta/spg/blob/main/espn4.png?raw=true",
+    "ESPN5": "https://github.com/oalborta/spg/blob/main/espn5.png?raw=true",
+    "ESPN6": "https://github.com/oalborta/spg/blob/main/espn6.png?raw=true",
+    "ESPN7": "https://github.com/oalborta/spg/blob/main/espn7.png?raw=true",
+    "TS1": "https://github.com/oalborta/spg/blob/main/ts1.png?raw=true",
+    "TS2": "https://github.com/oalborta/spg/blob/main/ts2.png?raw=true",
+    "DSPORTS": "https://github.com/oalborta/spg/blob/main/DSPORTS.png?raw=true",
+    "DSPORTS2": "https://github.com/oalborta/spg/blob/main/DSPORTS2.png?raw=true",
+    "TYCSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true",
+    "T&CSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true"
 };
 
 var logosTorneo = {
@@ -50,16 +52,33 @@ var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
 var deferredPrompt = null;
 
-// Registrar Service Worker para PWA (Instalación nativa)
+function limpiarClave(texto) {
+    if (!texto) return '';
+    return texto.toString().replace(/[\s\-_&]/g, '').toUpperCase();
+}
+
+function buscarLogoCanal(nombreCanal) {
+    if (!nombreCanal) return null;
+    var clave = limpiarClave(nombreCanal);
+    if (logos[clave]) return logos[clave];
+
+    if (clave.indexOf('DSPORTS2') !== -1 || clave.indexOf('DIRECTV2') !== -1) return logos['DSPORTS2'];
+    if (clave.indexOf('DSPORTS') !== -1 || clave.indexOf('DIRECTV') !== -1) return logos['DSPORTS'];
+    if (clave.indexOf('TYC') !== -1) return logos['TYCSPORTS'];
+    if (clave.indexOf('TS1') !== -1) return logos['TS1'];
+    if (clave.indexOf('TS2') !== -1) return logos['TS2'];
+
+    return null;
+}
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('sw.js').catch(function(err) {
-            console.log('SW registration error:', err);
+            console.log('SW error:', err);
         });
     });
 }
 
-// Detección automática para mostrar botón Instalar en Android/Chrome
 window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
@@ -95,7 +114,6 @@ function cargarDatos() {
                 return row.Evento && row.Fecha;
             });
             todosLosEventos = data;
-            // Guardar en caché local para arranque instantáneo offline
             localStorage.setItem('spg_eventos_cache', JSON.stringify(data));
             renderizarEventos();
         },
@@ -104,12 +122,11 @@ function cargarDatos() {
                 btn.classList.remove('is-loading');
                 btn.disabled = false;
             }
-            // Si falla la red, usar datos guardados previamente
             var cached = localStorage.getItem('spg_eventos_cache');
             if (cached) {
                 todosLosEventos = JSON.parse(cached);
                 renderizarEventos();
-                mostrarToast('Sin conexión: mostrando datos guardados');
+                mostrarToast('Sin conexión: usando datos guardados');
             }
         }
     });
@@ -193,7 +210,6 @@ function renderizarEventos() {
     eventos.forEach(function(ev) {
         if (!ev.Fecha || !ev.Hora_Inicio || !ev.Hora_Fin) return;
 
-        // Filtro de búsqueda por texto
         if (textoBusquedaActual) {
             var strTotal = (ev.Evento + ' ' + (ev.Torneo || '') + ' ' + (ev.Canal || '')).toLowerCase();
             if (strTotal.indexOf(textoBusquedaActual) === -1) return;
@@ -225,16 +241,16 @@ function renderizarEventos() {
             esHoy = true;
         }
 
-        // Filtro por Chip
         if (filtroCanalActual === 'VIVO' && !estaEnVivo) return;
         if (filtroCanalActual !== 'TODOS' && filtroCanalActual !== 'VIVO') {
-            var cUpper = (ev.Canal || '').toUpperCase();
-            if (cUpper.indexOf(filtroCanalActual) === -1) return;
+            var canalNorm = limpiarClave(ev.Canal);
+            if (canalNorm.indexOf(filtroCanalActual) === -1) return;
         }
 
-        var logoCanal = logos[ev.Canal]
-            ? '<img src="' + logos[ev.Canal] + '" class="logo">'
-            : '<span class="badge">' + (ev.Canal ? ev.Canal.substring(0, 3).toUpperCase() : '') + '</span>';
+        var urlLogoCanal = buscarLogoCanal(ev.Canal);
+        var logoCanal = urlLogoCanal
+            ? '<img src="' + urlLogoCanal + '" class="logo">'
+            : '<span class="badge">' + (ev.Canal ? ev.Canal.substring(0, 4).toUpperCase() : '') + '</span>';
 
         var logoTorneo = logosTorneo[ev.Torneo]
             ? '<img src="' + logosTorneo[ev.Torneo] + '" class="logo">'
@@ -246,16 +262,19 @@ function renderizarEventos() {
         var div = document.createElement('div');
         div.className = 'evento';
 
-        // URL directa a Google Calendar
         var linkGoogleCal = obtenerLinkGoogleCalendar(ev.Evento, ev.Torneo, ev.Canal, ev.Fecha, ev.Hora_Inicio, ev.Hora_Fin);
 
-        var htmlAcciones = '';
+        // Botón único con icono SVG elegante de campana/alarma
+        var htmlBotonRecordar = '';
         if (!estaEnVivo) {
-            htmlAcciones = 
-                '<div class="acciones-evento">' +
-                    '<a href="' + linkGoogleCal + '" target="_blank" class="btn-calendar-g" title="Agendar en Google Calendar">🗓 Recordar</a>' +
-                    '<button class="btn-ics-opt" onclick="descargarRecordatorio(\'' + ev.Evento.replace(/'/g, "\\'") + '\', \'' + ev.Fecha + '\', \'' + ev.Hora_Inicio + '\')">.ICS</button>' +
-                '</div>';
+            htmlBotonRecordar = 
+                '<a href="' + linkGoogleCal + '" target="_blank" class="btn-recordar-pro" title="Guardar recordatorio">' +
+                    '<svg viewBox="0 0 24 24">' +
+                        '<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>' +
+                        '<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>' +
+                    '</svg>' +
+                    'Recordar' +
+                '</a>';
         }
 
         div.innerHTML =
@@ -268,7 +287,7 @@ function renderizarEventos() {
                 cuentaHtml +
             '</div>' +
             '<div class="col-logo">' + logoTorneo + '</div>' +
-            htmlAcciones;
+            htmlBotonRecordar;
 
         if (esHoy) {
             if (estaEnVivo) {
@@ -296,7 +315,6 @@ function renderizarEventos() {
     });
 }
 
-// Generador de enlace directo a Google Calendar (Abre la app al instante)
 function obtenerLinkGoogleCalendar(evento, torneo, canal, fecha, horaInicio, horaFin) {
     var pF = fecha.split('-');
     var pHi = horaInicio.split(':');
@@ -313,44 +331,6 @@ function obtenerLinkGoogleCalendar(evento, torneo, canal, fecha, horaInicio, hor
     var detalles = encodeURIComponent('Transmite: ' + (canal || 'Ver guía') + '\nProgramación Deportiva');
 
     return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + titulo + '&dates=' + isoStart + '/' + isoEnd + '&details=' + detalles;
-}
-
-// Descarga tradicional en archivo .ICS
-function descargarRecordatorio(evento, fecha, hora) {
-    var eventoLimpio = evento.replace(/[\n\r]+/g, ' ').replace(/,/g, ' ');
-    var partesFecha = fecha.trim().split('-');
-    var partesHora = hora.trim().split(':');
-
-    var anio = parseInt(partesFecha[0]);
-    var mes = parseInt(partesFecha[1]) - 1; 
-    var dia = parseInt(partesFecha[2]);
-    var h = parseInt(partesHora[0]);
-    var m = parseInt(partesHora[1]);
-
-    var fechaLocal = new Date(anio, mes, dia, h, m, 0);
-    var fechaFinLocal = new Date(anio, mes, dia, h + 1, m, 0);
-
-    var inicioUTC = fechaLocal.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-    var finUTC = fechaFinLocal.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-
-    var salto = '\r\n';
-    var ics = 'BEGIN:VCALENDAR' + salto + 
-              'VERSION:2.0' + salto + 
-              'PRODID:-//Programacion Deportiva//ES' + salto + 
-              'BEGIN:VEVENT' + salto + 
-              'DTSTART:' + inicioUTC + salto + 
-              'DTEND:' + finUTC + salto + 
-              'SUMMARY:' + eventoLimpio + salto + 
-              'END:VEVENT' + salto + 
-              'END:VCALENDAR';
-    
-    var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-    var link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'evento_' + anio + mes + dia + '.ics';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
 }
 
 function compartirApp() {
@@ -380,7 +360,6 @@ function mostrarToast(mensaje) {
     }, 2500);
 }
 
-// Cargar desde caché al inicio si existe para arranque instantáneo
 var cacheInicial = localStorage.getItem('spg_eventos_cache');
 if (cacheInicial) {
     todosLosEventos = JSON.parse(cacheInicial);
