@@ -11,8 +11,8 @@ var logos = {
     "ESPN7": "https://github.com/oalborta/spg/blob/main/espn7.png?raw=true",
     "TS1": "https://github.com/oalborta/spg/blob/main/ts1.png?raw=true",
     "TS2": "https://github.com/oalborta/spg/blob/main/ts2.png?raw=true",
-    "": "https://github.com/oalborta/spg/blob/main/.png?raw=true",
-    "2": "https://github.com/oalborta/spg/blob/main/2.png?raw=true",
+    "DSPORTS": "https://github.com/oalborta/spg/blob/main/.png?raw=true",
+    "DSPORTS 2": "https://github.com/oalborta/spg/blob/main/2.png?raw=true",
     "TYCSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true",
     "T&CSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true"
 };
