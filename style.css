@@ -7,7 +7,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: #f0f2f5;
     margin: 0;
-    padding-top: 195px;
+    padding-top: 205px; /* Espacio calibrado para la cabecera con logo ampliado */
     padding-bottom: 60px;
     color: #333;
 }
@@ -19,36 +19,40 @@ body {
     left: 0;
     width: 100%;
     background: linear-gradient(180deg, #0033bf 0%, #002089 100%);
-    padding: 10px 14px 6px 14px;
+    padding: 12px 18px 8px 18px; /* Ajuste para despegar del margen izquierdo */
     z-index: 100;
     box-shadow: 0 4px 20px rgba(0, 32, 137, 0.4);
 }
 
 .navbar-wrapper {
-    max-width: 900px;
+    max-width: 920px;
     margin: 0 auto;
     width: 100%;
+    padding: 0 6px;
 }
 
 .navbar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
 }
 
+/* ─── MARCA: LOGO Y TEXTO MÁS GRANDES Y SEPARADOS ─── */
 .brand-container {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px; /* Mayor separación entre el logo y el texto */
+    padding-left: 4px; /* Despegado sutil del margen */
 }
 
 .brand-logo {
-    height: 40px;
+    height: 48px; /* Logo más grande (antes 40px) */
     width: auto;
-    max-width: 65px;
+    max-width: 80px;
     object-fit: contain;
     display: block;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .brand-info {
@@ -58,26 +62,26 @@ body {
 }
 
 .brand-line-1 {
-    font-size: 0.95rem;
+    font-size: 1.08rem; /* Tipografía más grande y contundente */
     font-weight: 900;
     color: #ffffff;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
 }
 
 .brand-line-2 {
-    font-size: 0.8rem;
+    font-size: 0.92rem;
     font-weight: 800;
     color: #63a7f8;
-    letter-spacing: 0.8px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .texto-legal {
-    font-size: 0.55rem;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 4px 0 0 0;
+    font-size: 0.58rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 6px 0 0 0;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     text-align: right;
@@ -98,9 +102,9 @@ body {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.28);
     color: #ffffff;
-    padding: 6px 10px;
+    padding: 7px 11px;
     border-radius: 8px;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     cursor: pointer;
     font-weight: 700;
     transition: all 0.2s ease;
@@ -122,8 +126,8 @@ body {
 }
 
 .icon-svg {
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
 }
 
@@ -144,18 +148,18 @@ body {
 
 .search-box {
     position: relative;
-    margin-top: 8px;
+    margin-top: 10px;
     display: flex;
     align-items: center;
 }
 
 .search-box input {
     width: 100%;
-    padding: 8px 32px 8px 32px;
+    padding: 9px 34px 9px 34px;
     border-radius: 20px;
     border: none;
     background: rgba(255, 255, 255, 0.95);
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: #111;
     outline: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -163,15 +167,15 @@ body {
 
 .search-icon {
     position: absolute;
-    left: 10px;
-    width: 14px;
-    height: 14px;
+    left: 11px;
+    width: 15px;
+    height: 15px;
     stroke: #666;
 }
 
 #btnLimpiarBusqueda {
     position: absolute;
-    right: 8px;
+    right: 9px;
     background: none;
     border: none;
     color: #888;
@@ -211,9 +215,9 @@ body {
     border-color: #63a7f8;
 }
 
-/* ─── CONTENEDOR PRINCIPAL RESPONSIVE (PC / TABLET) ─── */
+/* ─── CONTENEDOR PRINCIPAL RESPONSIVE ─── */
 .main-container {
-    max-width: 900px;
+    max-width: 920px;
     margin: 0 auto;
     width: 100%;
     padding: 0 10px;
@@ -338,7 +342,7 @@ h2 {
     margin-top: 3px;
 }
 
-/* ─── BOTÓN RECORDAR PRO (LIMPIO CON ICONO SVG) ─── */
+/* ─── BOTÓN RECORDAR PRO ─── */
 .btn-recordar-pro {
     display: inline-flex;
     align-items: center;
@@ -438,14 +442,14 @@ h2 {
 /* ─── AJUSTES RESPONSIVE PARA ESCRITORIO (PC) ─── */
 @media (min-width: 768px) {
     body {
-        padding-top: 155px;
+        padding-top: 160px;
     }
 
     .navbar-controles {
         flex-direction: row;
         align-items: center;
         gap: 16px;
-        margin-top: 8px;
+        margin-top: 10px;
     }
 
     .search-box {
