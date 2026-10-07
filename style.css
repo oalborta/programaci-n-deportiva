@@ -7,21 +7,27 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: #f0f2f5;
     margin: 0;
-    padding-top: 195px; /* Altura para acomodar la barra, buscador y chips */
+    padding-top: 195px;
     padding-bottom: 60px;
     color: #333;
 }
 
-/* ─── NAVBAR CON MARCA Y DEGRADADO ─── */
+/* ─── NAVBAR CON CONTENEDOR CENTRADO ─── */
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     background: linear-gradient(180deg, #0033bf 0%, #002089 100%);
-    padding: 10px 14px 8px 14px;
+    padding: 10px 14px 6px 14px;
     z-index: 100;
     box-shadow: 0 4px 20px rgba(0, 32, 137, 0.4);
+}
+
+.navbar-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .navbar-top {
@@ -130,7 +136,12 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ─── BUSCADOR INTEGRADO ─── */
+/* ─── BUSCADOR Y CHIPS ─── */
+.navbar-controles {
+    display: flex;
+    flex-direction: column;
+}
+
 .search-box {
     position: relative;
     margin-top: 8px;
@@ -148,10 +159,6 @@ body {
     color: #111;
     outline: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.search-box input::placeholder {
-    color: #888;
 }
 
 .search-icon {
@@ -173,7 +180,6 @@ body {
     padding: 4px;
 }
 
-/* ─── CHIPS / FILTROS HORIZONTALES ─── */
 .chips-container {
     display: flex;
     gap: 6px;
@@ -205,9 +211,17 @@ body {
     border-color: #63a7f8;
 }
 
+/* ─── CONTENEDOR PRINCIPAL RESPONSIVE (PC / TABLET) ─── */
+.main-container {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 10px;
+}
+
 /* ─── BLOQUES Y SECCIONES ─── */
 .bloque {
-    margin: 12px 14px;
+    margin: 14px 0;
     background: #fff;
     border-radius: 14px;
     padding: 16px;
@@ -226,7 +240,7 @@ h2 {
 }
 
 .separador-dia {
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     color: #0033bf;
     font-weight: 800;
     padding: 12px 8px 6px 8px;
@@ -238,18 +252,18 @@ h2 {
 
 .sin-eventos {
     text-align: center;
-    padding: 20px 10px;
+    padding: 24px 10px;
     color: #aaa;
     font-size: 0.8rem;
 }
 
-/* ─── TARJETAS DE EVENTOS ─── */
+/* ─── TARJETAS DE EVENTO ─── */
 .evento {
     display: flex;
     align-items: center;
-    padding: 10px 8px;
+    padding: 10px 10px;
     border-bottom: 1px solid #f5f5f5;
-    gap: 10px;
+    gap: 12px;
     transition: background 0.15s ease;
     border-radius: 8px;
 }
@@ -263,22 +277,23 @@ h2 {
 }
 
 .col-logo {
-    min-width: 38px;
+    min-width: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .logo {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     object-fit: contain;
 }
 
 .badge {
     font-size: 0.55rem;
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     background: #f0f2f5;
     display: flex;
     align-items: center;
@@ -294,15 +309,15 @@ h2 {
 }
 
 .evento strong {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: #1a1a1a;
     display: block;
-    line-height: 1.2;
+    line-height: 1.25;
 }
 
 .evento-info small {
     color: #666;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 500;
 }
 
@@ -317,50 +332,52 @@ h2 {
     color: #2e7d32;
     font-weight: 700;
     background: #e8f5e9;
-    padding: 2px 6px;
+    padding: 2px 7px;
     border-radius: 8px;
     display: inline-block;
     margin-top: 3px;
 }
 
-/* ─── BOTONES DE RECORDATORIO (CALENDARIO) ─── */
-.acciones-evento {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.btn-calendar-g {
-    background: #e9f0ff;
+/* ─── BOTÓN RECORDAR PRO (LIMPIO CON ICONO SVG) ─── */
+.btn-recordar-pro {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #eaf1ff;
     color: #0033bf;
-    border: none;
-    border-radius: 6px;
-    padding: 6px 10px;
-    font-size: 0.65rem;
+    border: 1px solid #d4e2ff;
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 0.7rem;
     cursor: pointer;
     font-weight: 700;
     text-decoration: none;
-    text-align: center;
     white-space: nowrap;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
-.btn-calendar-g:hover {
+.btn-recordar-pro svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    fill: none;
+}
+
+.btn-recordar-pro:hover {
     background: #0033bf;
-    color: #fff;
+    color: #ffffff;
+    border-color: #0033bf;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 51, 191, 0.25);
 }
 
-.btn-ics-opt {
-    background: transparent;
-    color: #777;
-    border: none;
-    font-size: 0.58rem;
-    cursor: pointer;
-    text-decoration: underline;
-    text-align: center;
+.btn-recordar-pro:active {
+    transform: translateY(0);
 }
 
-/* ─── ESTILO BROADCAST EN VIVO ─── */
+/* ─── EN VIVO ─── */
 #ahora .evento {
     border-left: 4px solid #ff3b30;
     background: #fff5f5;
@@ -413,9 +430,42 @@ h2 {
 
 .footer {
     text-align: center;
-    padding: 20px;
+    padding: 24px 10px;
     color: #aaa;
     font-size: 0.65rem;
+}
+
+/* ─── AJUSTES RESPONSIVE PARA ESCRITORIO (PC) ─── */
+@media (min-width: 768px) {
+    body {
+        padding-top: 155px;
+    }
+
+    .navbar-controles {
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        margin-top: 8px;
+    }
+
+    .search-box {
+        margin-top: 0;
+        flex: 1;
+    }
+
+    .chips-container {
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+    .btn-action {
+        padding: 7px 14px;
+        font-size: 0.74rem;
+    }
+
+    .bloque {
+        padding: 20px;
+    }
 }
 
 @media (max-width: 400px) {
