@@ -46,7 +46,6 @@ body {
     padding-left: 4px;
 }
 
-/* Renderizado limpio del logo: sin filtros que alteren el canal alfa */
 .brand-logo {
     height: 48px;
     width: auto;
@@ -284,17 +283,31 @@ h2 {
 }
 
 .col-logo {
-    min-width: 40px;
+    min-width: 44px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    gap: 3px;
 }
 
 .logo {
     width: 38px;
     height: 38px;
     object-fit: contain;
+}
+
+/* Número de canal de Tigo Bolivia */
+.canal-numero {
+    font-size: 0.58rem;
+    font-weight: 800;
+    color: #002089;
+    background: #e1e9ff;
+    padding: 1px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
 }
 
 .badge {
@@ -345,7 +358,33 @@ h2 {
     margin-top: 3px;
 }
 
-/* ─── BOTÓN RECORDAR PRO ─── */
+/* Minuto transcurrido en vivo */
+.minuto-vivo {
+    font-size: 0.62rem;
+    color: #c62828;
+    font-weight: 800;
+    background: #ffebee;
+    padding: 2px 7px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 3px;
+    animation: pulsoTexto 2s infinite ease-in-out;
+}
+
+@keyframes pulsoTexto {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.65; }
+}
+
+/* ─── BOTONES DE ACCIÓN (RECORDAR Y WHATSAPP) ─── */
+.acciones-evento {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
 .btn-recordar-pro {
     display: inline-flex;
     align-items: center;
@@ -354,19 +393,18 @@ h2 {
     color: #0033bf;
     border: 1px solid #d4e2ff;
     border-radius: 8px;
-    padding: 7px 12px;
-    font-size: 0.7rem;
+    padding: 6px 10px;
+    font-size: 0.68rem;
     cursor: pointer;
     font-weight: 700;
     text-decoration: none;
     white-space: nowrap;
     transition: all 0.2s ease;
-    flex-shrink: 0;
 }
 
 .btn-recordar-pro svg {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     stroke: currentColor;
     stroke-width: 2.2;
     fill: none;
@@ -380,8 +418,38 @@ h2 {
     box-shadow: 0 3px 8px rgba(0, 51, 191, 0.25);
 }
 
-.btn-recordar-pro:active {
-    transform: translateY(0);
+.btn-wsp {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #e8f5e9;
+    color: #1b5e20;
+    border: 1px solid #c8e6c9;
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-size: 0.65rem;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-wsp svg {
+    width: 13px;
+    height: 13px;
+    fill: #2e7d32;
+}
+
+.btn-wsp:hover {
+    background: #25d366;
+    color: #ffffff;
+    border-color: #25d366;
+    transform: translateY(-1px);
+}
+
+.btn-wsp:hover svg {
+    fill: #ffffff;
 }
 
 /* ─── EN VIVO ─── */
@@ -463,6 +531,12 @@ h2 {
     .chips-container {
         padding: 0;
         flex-shrink: 0;
+    }
+
+    .acciones-evento {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
     }
 
     .btn-action {
