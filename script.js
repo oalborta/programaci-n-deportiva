@@ -1,4 +1,4 @@
-var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
+var BASE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
 
 // Mapa de logos de canales
 var logos = {
@@ -17,7 +17,7 @@ var logos = {
     "T&CSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true"
 };
 
-// Guía oficial de canales en la grilla de Tigo
+// Guía de canales para Tigo
 var canalesTigo = {
     "TS1": "Ch. 700 / 1",
     "TS2": "Ch. 715",
@@ -137,31 +137,45 @@ function cargarDatos() {
         btn.disabled = true;
     }
 
-    Papa.parse(CSV_URL, {
+    // Parámetro para romper la caché del navegador y forzar descarga en tiempo real
+    var urlFresca = BASE_CSV_URL + '&_t=' + new Date().getTime();
+
+    Papa.parse(urlFresca, {
         download: true,
         header: true,
+        skipEmptyLines: true,
         complete: function(res) {
             if (btn) {
                 btn.classList.remove('is-loading');
                 btn.disabled = false;
             }
+
+            if (!res.data || res.data.length === 0) {
+                mostrarToast('El archivo de Google Sheets está vacío');
+                return;
+            }
+
             var data = res.data.filter(function(row) {
                 return row.Evento && row.Fecha;
             });
+
             todosLosEventos = data;
             localStorage.setItem('spg_eventos_cache', JSON.stringify(data));
             renderizarEventos();
         },
-        error: function() {
+        error: function(err) {
             if (btn) {
                 btn.classList.remove('is-loading');
                 btn.disabled = false;
             }
+            console.error('Error al descargar Google Sheet:', err);
             var cached = localStorage.getItem('spg_eventos_cache');
             if (cached) {
                 todosLosEventos = JSON.parse(cached);
                 renderizarEventos();
                 mostrarToast('Sin conexión: usando datos guardados');
+            } else {
+                mostrarToast('Error de conexión con Google Sheets');
             }
         }
     });
@@ -210,7 +224,6 @@ function obtenerCuentaRegresiva(fecha, hora) {
     return 'En ' + dias + ' días';
 }
 
-// Función 4: Minutos transcurridos en Vivo
 function obtenerTiempoTranscurrido(fechaInicio) {
     var ahora = new Date();
     var diff = ahora - fechaInicio;
@@ -288,7 +301,6 @@ function renderizarEventos() {
             esHoy = true;
         }
 
-        // Filtro por canal exacto
         if (filtroCanalActual === 'VIVO' && !estaEnVivo) return;
         if (filtroCanalActual !== 'TODOS' && filtroCanalActual !== 'VIVO') {
             var canalNorm = limpiarClave(ev.Canal);
@@ -304,7 +316,6 @@ function renderizarEventos() {
             }
         }
 
-        // Logo y Número de Canal Tigo
         var urlLogoCanal = buscarLogoCanal(ev.Canal);
         var numCanalTigo = obtenerNumeroCanalTigo(ev.Canal);
         var badgeNumeroHtml = numCanalTigo ? '<span class="canal-numero">' + numCanalTigo + '</span>' : '';
@@ -317,7 +328,6 @@ function renderizarEventos() {
             ? '<img src="' + logosTorneo[ev.Torneo] + '" class="logo">'
             : '<span class="badge">' + (ev.Torneo ? ev.Torneo.substring(0, 3).toUpperCase() : '') + '</span>';
 
-        // Estado temporal: Si está en vivo muestra minuto transcurrido, si no cuenta regresiva
         var indicadorTiempoHtml = '';
         if (estaEnVivo) {
             indicadorTiempoHtml = '<div class="minuto-vivo">● En juego (' + obtenerTiempoTranscurrido(fechaInicio) + ')</div>';
@@ -326,7 +336,6 @@ function renderizarEventos() {
             indicadorTiempoHtml = cuenta ? '<div class="cuenta-regresiva">' + cuenta + '</div>' : '';
         }
 
-        // Función 1: Enlace para compartir en WhatsApp
         var linkWhatsApp = obtenerLinkWhatsApp(ev.Evento, ev.Torneo, ev.Canal, numCanalTigo, ev.Fecha, ev.Hora_Inicio, estaEnVivo);
 
         var div = document.createElement('div');
@@ -366,8 +375,8 @@ function renderizarEventos() {
                         '<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                     </svg>
                     Avisar
-                </a>' +
-            '</div>';
+                </a>
+            </div>';
 
         if (esHoy) {
             if (estaEnVivo) {
@@ -395,7 +404,6 @@ function renderizarEventos() {
     });
 }
 
-// Generador de enlace para compartir en WhatsApp
 function obtenerLinkWhatsApp(evento, torneo, canal, numCanal, fecha, hora, estaEnVivo) {
     var estadoTxt = estaEnVivo ? '🔴 *¡EN VIVO AHORA!*' : '📅 *' + fechaLegible(fecha) + ' - ' + hora + '*';
     var canalTxt = canal ? (canal + (numCanal ? ' (' + numCanal + ')' : '')) : 'Tigo Sports';
@@ -455,5 +463,4 @@ if (cacheInicial) {
 }
 
 cargarDatos();
-// Refresca cada minuto para actualizar automáticamente el contador de tiempo jugado
 setInterval(cargarDatos, 60000);
