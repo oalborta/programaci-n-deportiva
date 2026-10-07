@@ -1,5 +1,5 @@
 :root {
-    /* Tema Claro (Por defecto) */
+    /* Tema Claro */
     --bg-body: #f0f2f5;
     --bg-card: #ffffff;
     --text-main: #1a1a1a;
@@ -25,7 +25,7 @@
     --vivo-card-border: #ffd8d6;
 }
 
-/* Variables para Modo Oscuro */
+/* Tema Oscuro */
 body.dark-mode {
     --bg-body: #0b1120;
     --bg-card: #151e32;
@@ -198,7 +198,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ─── BUSCADOR Y FILTROS ─── */
+/* ─── CONTROLES (BUSCADOR Y CHIPS) ─── */
 .navbar-controles {
     display: flex;
     flex-direction: column;
@@ -286,7 +286,6 @@ body.dark-mode .search-box input {
     padding: 0 10px;
 }
 
-/* ─── BLOQUES ─── */
 .bloque {
     margin: 14px 0;
     background: var(--bg-card);
@@ -326,7 +325,7 @@ h2 {
     font-size: 0.8rem;
 }
 
-/* ─── EVENTOS ─── */
+/* ─── TARJETAS DE EVENTOS ─── */
 .evento {
     display: flex;
     align-items: center;
@@ -451,7 +450,7 @@ body.dark-mode .minuto-vivo {
     50% { opacity: 0.65; }
 }
 
-/* ─── BOTONES ACCIÓN ─── */
+/* ─── BOTONES RECORDAR Y AVISAR ─── */
 .acciones-evento {
     display: flex;
     flex-direction: column;
@@ -542,7 +541,7 @@ body.dark-mode .btn-wsp svg {
     fill: #4ade80;
 }
 
-/* ─── EN VIVO ─── */
+/* ─── ESTILOS EN VIVO ─── */
 #ahora .evento {
     border-left: 4px solid #ff3b30;
     background: var(--vivo-card-bg);
@@ -568,7 +567,7 @@ body.dark-mode .btn-wsp svg {
     50% { opacity: 0.25; }
 }
 
-/* ─── TOAST ─── */
+/* ─── TOAST NOTIFICACIÓN ─── */
 .toast {
     position: fixed;
     bottom: 24px;
@@ -605,7 +604,7 @@ body.dark-mode .toast {
     font-size: 0.65rem;
 }
 
-/* ─── RESPONSIVE PC ─── */
+/* ─── ADAPTACIÓN ESCRITORIO (PC) ─── */
 @media (min-width: 768px) {
     body {
         padding-top: 160px;
@@ -644,7 +643,7 @@ body.dark-mode .toast {
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 420px) {
     .btn-action .btn-text {
         display: none;
     }
