@@ -12,7 +12,7 @@ var logos = {
     "TS1": "https://github.com/oalborta/spg/blob/main/ts1.png?raw=true",
     "TS2": "https://github.com/oalborta/spg/blob/main/ts2.png?raw=true",
     "DSPORTS": "https://github.com/oalborta/spg/blob/main/DSPORTS.png?raw=true",
-    "DSPORTS 2": "https://github.com/oalborta/spg/blob/main/DSPORTS2.png?raw=true",
+    "DSPORTS2": "https://github.com/oalborta/spg/blob/main/DSPORTS2.png?raw=true",
     "TYCSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true",
     "T&CSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true"
 };
@@ -52,20 +52,26 @@ var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
 var deferredPrompt = null;
 
-// Normaliza texto: quita espacios y caracteres raros para comparar siempre seguro
+// Normalización ultra-flexible (ignora espacios, guiones, puntos y mayúsculas/minúsculas)
 function limpiarClave(texto) {
     if (!texto) return '';
-    return texto.toString().replace(/[\s\-_&]/g, '').toUpperCase();
+    return texto.toString().replace(/[\s\-_&.]/g, '').toUpperCase().trim();
 }
 
 function buscarLogoCanal(nombreCanal) {
     if (!nombreCanal) return null;
     var clave = limpiarClave(nombreCanal);
+
+    // Detección directa de DSports
+    if (clave === 'DSPORTS2' || clave === 'DIRECTV2' || clave.indexOf('DSPORTS2') !== -1 || clave.indexOf('DIRECTVSPORTS2') !== -1) {
+        return logos['DSPORTS2'];
+    }
+    if (clave === 'DSPORTS' || clave === 'DIRECTV' || clave.indexOf('DSPORTS') !== -1 || clave.indexOf('DIRECTVSPORTS') !== -1) {
+        return logos['DSPORTS'];
+    }
+
     if (logos[clave]) return logos[clave];
 
-    // Búsquedas tolerantes
-    if (clave.indexOf('2') !== -1 || clave.indexOf('DIRECTV2') !== -1) return logos['2'];
-    if (clave.indexOf('') !== -1 || clave.indexOf('DIRECTV') !== -1) return logos[''];
     if (clave.indexOf('TYC') !== -1) return logos['TYCSPORTS'];
     if (clave.indexOf('TS1') !== -1) return logos['TS1'];
     if (clave.indexOf('TS2') !== -1) return logos['TS2'];
@@ -243,10 +249,23 @@ function renderizarEventos() {
             esHoy = true;
         }
 
+        // ─── FILTRO EXACTO POR BOTÓN DE CANAL ───
         if (filtroCanalActual === 'VIVO' && !estaEnVivo) return;
         if (filtroCanalActual !== 'TODOS' && filtroCanalActual !== 'VIVO') {
             var canalNorm = limpiarClave(ev.Canal);
-            if (canalNorm.indexOf(filtroCanalActual) === -1) return;
+
+            if (filtroCanalActual === 'TS') {
+                // Tigo Sports: debe contener TS o TIGO, pero EXCLUIR explícitamente DSPORTS
+                var esTigo = (canalNorm.indexOf('TS') !== -1 || canalNorm.indexOf('TIGO') !== -1) && (canalNorm.indexOf('DSPORTS') === -1);
+                if (!esTigo) return;
+            } else if (filtroCanalActual === 'DSPORTS') {
+                // DSports: coincide con DSPORTS o DIRECTV
+                var esDsports = (canalNorm.indexOf('DSPORTS') !== -1 || canalNorm.indexOf('DIRECTV') !== -1);
+                if (!esDsports) return;
+            } else {
+                // ESPN, TYC, etc.
+                if (canalNorm.indexOf(filtroCanalActual) === -1) return;
+            }
         }
 
         var urlLogoCanal = buscarLogoCanal(ev.Canal);
