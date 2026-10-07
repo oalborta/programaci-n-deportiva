@@ -68,7 +68,52 @@ var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
 var deferredPrompt = null;
 
-/* ─── LÓGICA MODO OSCURO ─── */
+/* ─── LÓGICA DE INSTALACIÓN PWA (MÓVIL Y ESCRITORIO) ─── */
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').catch(function(err) {
+            console.log('SW error:', err);
+        });
+    });
+}
+
+window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    var btnInstalar = document.getElementById('btnInstalar');
+    if (btnInstalar) {
+        btnInstalar.style.display = 'inline-flex';
+    }
+});
+
+function iniciarInstalacion() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(choiceResult) {
+            if (choiceResult.outcome === 'accepted') {
+                var btn = document.getElementById('btnInstalar');
+                if (btn) btn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        });
+    } else {
+        var esStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        if (esStandalone) {
+            mostrarToast('La aplicación ya está instalada');
+        } else {
+            mostrarToast('Instalable desde el menú o barra del navegador');
+        }
+    }
+}
+
+window.addEventListener('appinstalled', function() {
+    var btn = document.getElementById('btnInstalar');
+    if (btn) btn.style.display = 'none';
+    deferredPrompt = null;
+    mostrarToast('¡Aplicación instalada con éxito!');
+});
+
+/* ─── MODO OSCURO / NOCHE ─── */
 function inicializarTema() {
     var guardado = localStorage.getItem('spg_tema');
     var prefiereOscuro = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -95,7 +140,6 @@ function aplicarTemaOscuro(activar) {
         if (metaTheme) metaTheme.setAttribute('content', '#0f172a');
         if (txtTema) txtTema.innerText = 'Día';
         if (iconoTema) {
-            // Icono de Sol
             iconoTema.innerHTML = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
         }
     } else {
@@ -103,7 +147,6 @@ function aplicarTemaOscuro(activar) {
         if (metaTheme) metaTheme.setAttribute('content', '#0033bf');
         if (txtTema) txtTema.innerText = 'Noche';
         if (iconoTema) {
-            // Icono de Luna
             iconoTema.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
         }
     }
@@ -111,6 +154,7 @@ function aplicarTemaOscuro(activar) {
 
 inicializarTema();
 
+/* ─── UTILIDADES Y PROCESAMIENTO ─── */
 function limpiarClave(texto) {
     if (!texto) return '';
     return texto.toString().replace(/[\s\-_&.]/g, '').toUpperCase().trim();
@@ -163,30 +207,6 @@ function obtenerNumeroCanalTigo(nombreCanal) {
 
     return '';
 }
-
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('sw.js').catch(function(err) {
-            console.log('SW error:', err);
-        });
-    });
-}
-
-window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    var btnInstalar = document.getElementById('btnInstalar');
-    if (btnInstalar) {
-        btnInstalar.style.display = 'inline-flex';
-        btnInstalar.onclick = function() {
-            btnInstalar.style.display = 'none';
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(function() {
-                deferredPrompt = null;
-            });
-        };
-    }
-});
 
 function cargarDatos() {
     var btn = document.getElementById('btnRecargar');
