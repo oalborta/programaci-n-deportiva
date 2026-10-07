@@ -1,37 +1,36 @@
 * { 
     box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background: #f0f2f5;
     margin: 0;
-    padding-top: 105px;
+    padding-top: 195px; /* Altura para acomodar la barra, buscador y chips */
     padding-bottom: 60px;
     color: #333;
 }
 
-/* ─── NAVBAR / ENCABEZADO CON MARCA ─── */
+/* ─── NAVBAR CON MARCA Y DEGRADADO ─── */
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    /* Degradado deportivo solicitado: de #0033bf a #002089 hacia abajo */
     background: linear-gradient(180deg, #0033bf 0%, #002089 100%);
-    padding: 12px 16px 8px 16px;
+    padding: 10px 14px 8px 14px;
     z-index: 100;
-    box-shadow: 0 4px 20px rgba(0, 32, 137, 0.35);
+    box-shadow: 0 4px 20px rgba(0, 32, 137, 0.4);
 }
 
 .navbar-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-/* ─── LOGO Y MARCA EN 2 LÍNEAS ─── */
 .brand-container {
     display: flex;
     align-items: center;
@@ -39,9 +38,9 @@ body {
 }
 
 .brand-logo {
-    height: 42px;
+    height: 40px;
     width: auto;
-    max-width: 75px;
+    max-width: 65px;
     object-fit: contain;
     display: block;
 }
@@ -56,31 +55,32 @@ body {
     font-size: 0.95rem;
     font-weight: 900;
     color: #ffffff;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
 }
 
 .brand-line-2 {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 800;
     color: #63a7f8;
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
     margin-top: 2px;
 }
 
 .texto-legal {
-    font-size: 0.58rem;
-    color: rgba(255, 255, 255, 0.65);
-    margin: 6px 0 0 0;
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 4px 0 0 0;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    text-align: right;
 }
 
-/* ─── BOTONES MEJORADOS ─── */
+/* ─── BOTONES SUPERIORES ─── */
 .btn-group {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
 }
 
@@ -88,37 +88,39 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    background: rgba(255, 255, 255, 0.14);
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.28);
     color: #ffffff;
-    padding: 7px 12px;
+    padding: 6px 10px;
     border-radius: 8px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     cursor: pointer;
     font-weight: 700;
     transition: all 0.2s ease;
-    backdrop-filter: blur(4px);
     white-space: nowrap;
 }
 
 .btn-action:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.45);
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.28);
 }
 
-.btn-action:active {
-    transform: translateY(0);
+.btn-install {
+    background: #00e676;
+    color: #002089;
+    border-color: #00e676;
+}
+
+.btn-install:hover {
+    background: #00c853;
 }
 
 .icon-svg {
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     flex-shrink: 0;
 }
 
-/* Animación de giro continuo al recargar */
 .is-loading .icon-svg {
     animation: rotar 0.8s linear infinite;
 }
@@ -128,7 +130,263 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ─── TOAST / NOTIFICACIÓN COPIADO ─── */
+/* ─── BUSCADOR INTEGRADO ─── */
+.search-box {
+    position: relative;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 8px 32px 8px 32px;
+    border-radius: 20px;
+    border: none;
+    background: rgba(255, 255, 255, 0.95);
+    font-size: 0.8rem;
+    color: #111;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.search-box input::placeholder {
+    color: #888;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    width: 14px;
+    height: 14px;
+    stroke: #666;
+}
+
+#btnLimpiarBusqueda {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 4px;
+}
+
+/* ─── CHIPS / FILTROS HORIZONTALES ─── */
+.chips-container {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 0 2px 0;
+    scrollbar-width: none;
+}
+
+.chips-container::-webkit-scrollbar {
+    display: none;
+}
+
+.chip {
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chip.active {
+    background: #63a7f8;
+    color: #002089;
+    border-color: #63a7f8;
+}
+
+/* ─── BLOQUES Y SECCIONES ─── */
+.bloque {
+    margin: 12px 14px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+h2 {
+    font-size: 0.65rem;
+    color: #888;
+    margin: 0 0 12px 0;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 800;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.separador-dia {
+    font-size: 0.7rem;
+    color: #0033bf;
+    font-weight: 800;
+    padding: 12px 8px 6px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e1e9ff;
+    margin-bottom: 5px;
+}
+
+.sin-eventos {
+    text-align: center;
+    padding: 20px 10px;
+    color: #aaa;
+    font-size: 0.8rem;
+}
+
+/* ─── TARJETAS DE EVENTOS ─── */
+.evento {
+    display: flex;
+    align-items: center;
+    padding: 10px 8px;
+    border-bottom: 1px solid #f5f5f5;
+    gap: 10px;
+    transition: background 0.15s ease;
+    border-radius: 8px;
+}
+
+.evento:hover {
+    background: #f8faff;
+}
+
+.evento:last-child {
+    border-bottom: none;
+}
+
+.col-logo {
+    min-width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.badge {
+    font-size: 0.55rem;
+    width: 36px;
+    height: 36px;
+    background: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 8px;
+    color: #888;
+    font-weight: 700;
+}
+
+.evento-info {
+    flex-grow: 1;
+}
+
+.evento strong {
+    font-size: 0.85rem;
+    color: #1a1a1a;
+    display: block;
+    line-height: 1.2;
+}
+
+.evento-info small {
+    color: #666;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.hora-destacada {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #0033bf;
+}
+
+.cuenta-regresiva {
+    font-size: 0.62rem;
+    color: #2e7d32;
+    font-weight: 700;
+    background: #e8f5e9;
+    padding: 2px 6px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: 3px;
+}
+
+/* ─── BOTONES DE RECORDATORIO (CALENDARIO) ─── */
+.acciones-evento {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.btn-calendar-g {
+    background: #e9f0ff;
+    color: #0033bf;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.65rem;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-calendar-g:hover {
+    background: #0033bf;
+    color: #fff;
+}
+
+.btn-ics-opt {
+    background: transparent;
+    color: #777;
+    border: none;
+    font-size: 0.58rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-align: center;
+}
+
+/* ─── ESTILO BROADCAST EN VIVO ─── */
+#ahora .evento {
+    border-left: 4px solid #ff3b30;
+    background: #fff5f5;
+    border-radius: 0 8px 8px 0;
+}
+
+#ahora h2 {
+    color: #ff3b30;
+    border-bottom-color: #ffd8d6;
+}
+
+#ahora h2::before {
+    content: '● ';
+    animation: pulso 1.5s infinite;
+}
+
+#ahora .hora-destacada {
+    color: #ff3b30;
+}
+
+@keyframes pulso {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+}
+
+/* ─── TOAST / NOTIFICACIÓN ─── */
 .toast {
     position: fixed;
     bottom: 24px;
@@ -153,193 +411,15 @@ body {
     transform: translateX(-50%) translateY(0);
 }
 
-/* En pantallas angostas oculta la palabra y deja solo el icono */
-@media (max-width: 380px) {
-    .btn-action .btn-text {
-        display: none;
-    }
-    .btn-action {
-        padding: 8px 10px;
-    }
-}
-
-/* ─── BLOQUES ─── */
-.bloque {
-    margin: 12px 15px;
-    background: #fff;
-    border-radius: 14px;
-    padding: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-}
-
-h2 {
-    font-size: 0.65rem;
-    color: #888;
-    margin: 0 0 12px 0;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    font-weight: 700;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-/* ─── SEPARADOR DE DÍA ─── */
-.separador-dia {
-    font-size: 0.7rem;
-    color: #0033bf;
-    font-weight: 800;
-    padding: 10px 8px 5px 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid #e1e9ff;
-    margin-bottom: 5px;
-}
-
-/* ─── SIN EVENTOS ─── */
-.sin-eventos {
-    text-align: center;
-    padding: 25px 10px;
-    color: #bbb;
-    font-size: 0.8rem;
-}
-
-/* ─── EVENTOS ─── */
-.evento {
-    display: flex;
-    align-items: center;
-    padding: 12px 8px;
-    border-bottom: 1px solid #f5f5f5;
-    gap: 12px;
-    transition: background 0.15s ease;
-    border-radius: 8px;
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.evento:hover {
-    background: #f8faff;
-}
-
-.evento:last-child {
-    border-bottom: none;
-}
-
-.col-logo {
-    min-width: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.logo {
-    width: 38px;
-    height: 38px;
-    object-fit: contain;
-}
-
-.badge {
-    font-size: 0.55rem;
-    width: 38px;
-    height: 38px;
-    background: #f0f2f5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border-radius: 8px;
-    color: #888;
-    font-weight: 700;
-}
-
-.evento strong {
-    font-size: 0.85rem;
-    color: #222;
-}
-
-.evento-info small {
-    color: #777;
-    font-size: 0.72rem;
-}
-
-.hora-destacada {
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #0033bf;
-}
-
-.cuenta-regresiva {
-    font-size: 0.65rem;
-    color: #2e7d32;
-    font-weight: 700;
-    background: #e8f5e9;
-    padding: 2px 8px;
-    border-radius: 10px;
-    display: inline-block;
-    margin-top: 3px;
-}
-
-/* ─── BOTÓN RECORDAR ─── */
-.btn-recordar {
-    background: #e9f0ff;
-    color: #0033bf;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 14px;
-    font-size: 0.68rem;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.btn-recordar:hover {
-    background: #0033bf;
-    color: #ffffff;
-    transform: translateY(-1px);
-}
-
-.btn-recordar:active {
-    transform: translateY(0);
-}
-
-/* ─── EN VIVO ─── */
-#ahora .evento {
-    border-left: 4px solid #ff3b30;
-    background: #fff5f5;
-    border-radius: 0 8px 8px 0;
-}
-
-#ahora .evento:hover {
-    background: #ffecec;
-}
-
-#ahora h2 {
-    color: #ff3b30;
-    border-bottom-color: #ffd8d6;
-}
-
-#ahora h2::before {
-    content: '● ';
-    animation: pulso 1.5s infinite;
-}
-
-#ahora .hora-destacada {
-    color: #ff3b30;
-}
-
-@keyframes pulso {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.25; }
-}
-
-/* ─── FOOTER ─── */
 .footer {
     text-align: center;
     padding: 20px;
     color: #aaa;
     font-size: 0.65rem;
+}
+
+@media (max-width: 400px) {
+    .btn-action .btn-text {
+        display: none;
+    }
 }
