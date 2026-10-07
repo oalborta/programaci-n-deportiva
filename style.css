@@ -46,19 +46,16 @@ body {
     padding-left: 4px;
 }
 
-/* Ajuste para eliminar cualquier fondo o recuadro parásito */
+/* Renderizado limpio del logo: sin filtros que alteren el canal alfa */
 .brand-logo {
     height: 48px;
     width: auto;
     max-width: 80px;
     object-fit: contain;
     display: block;
-    background: transparent !important;
-    background-color: transparent !important;
+    background: none !important;
     border: none !important;
-    box-shadow: none !important;
-    /* Fusión de color para aislar elementos blancos sobre fondo oscuro */
-    mix-blend-mode: screen; 
+    outline: none !important;
 }
 
 .brand-info {
