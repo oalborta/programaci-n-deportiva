@@ -141,7 +141,7 @@ body {
     text-align: right;
 }
 
-/* ─── BOTONES SUPERIORES (AJUSTADOS PARA MÓVIL) ─── */
+/* ─── BOTONES SUPERIORES ─── */
 .btn-group {
     display: flex;
     gap: 5px;
@@ -195,7 +195,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ─── CONTROLES (BUSCADOR Y CHIPS) ─── */
+/* ─── BUSCADOR Y CHIPS ─── */
 .navbar-controles {
     display: flex;
     flex-direction: column;
@@ -633,7 +633,6 @@ body.dark-mode .toast {
     }
 }
 
-/* En teléfonos: los botones conservan su icono visible y texto compacto */
 @media (max-width: 600px) {
     .btn-action {
         padding: 6px 8px;
@@ -648,6 +647,6 @@ body.dark-mode .toast {
 
 @media (max-width: 380px) {
     .btn-action .btn-text {
-        display: none; /* Solo en pantallas extremadamente estrechas se oculta el texto para no empujar botones */
+        display: none;
     }
 }
