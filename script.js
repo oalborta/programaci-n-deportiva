@@ -1,4 +1,4 @@
-var BASE_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
+var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
 
 // Mapa de logos de canales
 var logos = {
@@ -17,7 +17,7 @@ var logos = {
     "T&CSPORTS": "https://github.com/oalborta/spg/blob/main/TyCSp.png?raw=true"
 };
 
-// Guía de canales para Tigo
+// Guía oficial de canales en Tigo
 var canalesTigo = {
     "TS1": "Ch. 700 / 1",
     "TS2": "Ch. 715",
@@ -130,6 +130,7 @@ window.addEventListener('beforeinstallprompt', function(e) {
     }
 });
 
+// Carga directa con la URL limpia y original de Google Sheets
 function cargarDatos() {
     var btn = document.getElementById('btnRecargar');
     if (btn) {
@@ -137,10 +138,7 @@ function cargarDatos() {
         btn.disabled = true;
     }
 
-    // Parámetro para romper la caché del navegador y forzar descarga en tiempo real
-    var urlFresca = BASE_CSV_URL + '&_t=' + new Date().getTime();
-
-    Papa.parse(urlFresca, {
+    Papa.parse(CSV_URL, {
         download: true,
         header: true,
         skipEmptyLines: true,
@@ -150,17 +148,11 @@ function cargarDatos() {
                 btn.disabled = false;
             }
 
-            if (!res.data || res.data.length === 0) {
-                mostrarToast('El archivo de Google Sheets está vacío');
-                return;
-            }
-
-            var data = res.data.filter(function(row) {
+            var data = (res.data || []).filter(function(row) {
                 return row.Evento && row.Fecha;
             });
 
             todosLosEventos = data;
-            localStorage.setItem('spg_eventos_cache', JSON.stringify(data));
             renderizarEventos();
         },
         error: function(err) {
@@ -168,15 +160,7 @@ function cargarDatos() {
                 btn.classList.remove('is-loading');
                 btn.disabled = false;
             }
-            console.error('Error al descargar Google Sheet:', err);
-            var cached = localStorage.getItem('spg_eventos_cache');
-            if (cached) {
-                todosLosEventos = JSON.parse(cached);
-                renderizarEventos();
-                mostrarToast('Sin conexión: usando datos guardados');
-            } else {
-                mostrarToast('Error de conexión con Google Sheets');
-            }
+            mostrarToast('Error al conectar con la hoja');
         }
     });
 }
@@ -301,6 +285,7 @@ function renderizarEventos() {
             esHoy = true;
         }
 
+        // Filtro por canal exacto
         if (filtroCanalActual === 'VIVO' && !estaEnVivo) return;
         if (filtroCanalActual !== 'TODOS' && filtroCanalActual !== 'VIVO') {
             var canalNorm = limpiarClave(ev.Canal);
@@ -454,12 +439,6 @@ function mostrarToast(mensaje) {
     setTimeout(function() {
         toast.classList.remove('show');
     }, 2500);
-}
-
-var cacheInicial = localStorage.getItem('spg_eventos_cache');
-if (cacheInicial) {
-    todosLosEventos = JSON.parse(cacheInicial);
-    renderizarEventos();
 }
 
 cargarDatos();
