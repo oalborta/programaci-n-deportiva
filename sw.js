@@ -1,4 +1,4 @@
-var CACHE_NAME = 'prog-dep-v1';
+var CACHE_NAME = 'prog-dep-v2';
 
 self.addEventListener('install', function(event) {
   self.skipWaiting();
