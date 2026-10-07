@@ -68,13 +68,27 @@ var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
 var deferredPrompt = null;
 
-/* ─── LÓGICA DE INSTALACIÓN PWA (MÓVIL Y ESCRITORIO) ─── */
+/* ─── LÓGICA DE INSTALACIÓN PWA ─── */
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('sw.js').catch(function(err) {
             console.log('SW error:', err);
         });
     });
+}
+
+// Ocultamos el botón por defecto si la app ya está instalada o standalone
+function verificarEstadoInstalacion() {
+    var esStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    var btn = document.getElementById('btnInstalar');
+    if (btn) {
+        if (esStandalone) {
+            btn.style.display = 'none';
+        } else {
+            // Se muestra de forma sutil solo si el navegador lo permite
+            btn.style.display = deferredPrompt ? 'inline-flex' : 'none';
+        }
+    }
 }
 
 window.addEventListener('beforeinstallprompt', function(e) {
@@ -93,15 +107,16 @@ function iniciarInstalacion() {
             if (choiceResult.outcome === 'accepted') {
                 var btn = document.getElementById('btnInstalar');
                 if (btn) btn.style.display = 'none';
+                mostrarToast('¡Instalando aplicación!');
             }
             deferredPrompt = null;
         });
     } else {
         var esStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         if (esStandalone) {
-            mostrarToast('La aplicación ya está instalada');
+            mostrarToast('La aplicación ya está instalada en tu equipo');
         } else {
-            mostrarToast('Instalable desde el menú o barra del navegador');
+            mostrarToast('Toca los tres puntos del navegador y elige "Instalar"');
         }
     }
 }
@@ -528,6 +543,7 @@ function mostrarToast(mensaje) {
     }, 2500);
 }
 
+// Carga inicial y respaldo
 var cacheInicial = localStorage.getItem('spg_eventos_cache');
 if (cacheInicial) {
     try {
@@ -536,5 +552,6 @@ if (cacheInicial) {
     } catch(e) {}
 }
 
+verificarEstadoInstalacion();
 cargarDatos();
 setInterval(cargarDatos, 60000);
