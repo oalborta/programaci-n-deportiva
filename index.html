@@ -2,16 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Metadatos PWA y Apple -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0033bf">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Programación Deportiva">
+    <link rel="apple-touch-icon" href="GO.png">
+    <link rel="icon" type="image/png" href="GO.png">
+
+    <!-- Previsualización para WhatsApp y Redes (Open Graph) -->
+    <meta property="og:title" content="Programación Deportiva">
+    <meta property="og:description" content="Consulta los eventos deportivos en vivo y la programación completa.">
+    <meta property="og:image" content="GO.png">
+    <meta property="og:type" content="website">
+
     <title>Programación Deportiva</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="navbar">
         <div class="navbar-top">
-            <!-- Marca con Logo y Título en dos líneas -->
             <div class="brand-container">
                 <img src="GO.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
                 <div class="brand-info">
@@ -20,15 +34,25 @@
                 </div>
             </div>
 
-            <!-- Botones Modernos -->
             <div class="btn-group">
-                <button onclick="cargarDatos()" id="btnRecargar" class="btn-action" title="Recargar eventos" aria-label="Recargar">
+                <!-- Botón Instalar (Aparece automáticamente si la app no está instalada) -->
+                <button id="btnInstalar" class="btn-action btn-install" style="display: none;" title="Instalar en pantalla">
+                    <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span class="btn-text">Instalar</span>
+                </button>
+
+                <button onclick="cargarDatos()" id="btnRecargar" class="btn-action" title="Recargar eventos">
                     <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
                     </svg>
                     <span class="btn-text">Recargar</span>
                 </button>
-                <button onclick="compartirApp()" id="btnCompartir" class="btn-action" title="Compartir enlace" aria-label="Compartir">
+
+                <button onclick="compartirApp()" id="btnCompartir" class="btn-action" title="Compartir enlace">
                     <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="18" cy="5" r="3"/>
                         <circle cx="6" cy="12" r="3"/>
@@ -40,10 +64,31 @@
                 </button>
             </div>
         </div>
+
+        <!-- Buscador integrado -->
+        <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="inputBuscar" placeholder="Buscar equipo, torneo o deporte..." oninput="filtrarEventos()">
+            <button id="btnLimpiarBusqueda" onclick="limpiarBusqueda()" style="display:none;">✕</button>
+        </div>
+
+        <!-- Filtros rápidos deslizables -->
+        <div class="chips-container">
+            <button class="chip active" onclick="filtrarCanal('TODOS', this)">Todos</button>
+            <button class="chip" onclick="filtrarCanal('VIVO', this)">🔴 En Vivo</button>
+            <button class="chip" onclick="filtrarCanal('TS', this)">Tigo Sports</button>
+            <button class="chip" onclick="filtrarCanal('ESPN', this)">ESPN</button>
+            <button class="chip" onclick="filtrarCanal('DSPORTS', this)">DSports</button>
+            <button class="chip" onclick="filtrarCanal('TyC', this)">TyC Sports</button>
+        </div>
+
         <p class="texto-legal">Programación sujeta a cambios</p>
     </header>
 
-    <main>
+    <main id="contenedorPrincipal">
         <section id="ahora" class="bloque">
             <h2>En vivo</h2>
             <div class="lista"></div>
@@ -58,7 +103,6 @@
         </section>
     </main>
 
-    <!-- Notificación moderna tipo toast cuando se copia el enlace -->
     <div id="toastMessage" class="toast">Enlace copiado al portapapeles</div>
 
     <footer class="footer">Programación Deportiva © 2026</footer>
