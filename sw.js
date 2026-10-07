@@ -1,21 +1,11 @@
-var CACHE_NAME = 'prog-dep-v4';
+var CACHE_NAME = 'prog-deportiva-v1';
 
 self.addEventListener('install', function(event) {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', function(event) {
-  event.waitUntil(
-    caches.keys().then(function(keys) {
-      return Promise.all(
-        keys.map(function(k) {
-          if (k !== CACHE_NAME) return caches.delete(k);
-        })
-      );
-    }).then(function() {
-      return self.clients.claim();
-    })
-  );
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('fetch', function(event) {
