@@ -2,7 +2,8 @@
   "name": "Programación Deportiva",
   "short_name": "Deportes",
   "description": "Guía de eventos deportivos en vivo y próximos",
-  "start_url": "./",
+  "id": "programacion-deportiva-tigo-v1",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#002089",
@@ -12,12 +13,14 @@
     {
       "src": "icon-pwa.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "icon-pwa.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
