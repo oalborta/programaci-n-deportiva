@@ -1,4 +1,4 @@
-var CSV_URL_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
+var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
 
 var logos = {
     "ESPN": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/espn.png",
@@ -66,14 +66,12 @@ var todosLosEventos = [];
 var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
 
-/* ─── MOTOR DE INSTALACIÓN PWA ─── */
+/* ─── EL BOTÓN ORIGINAL DE INSTALACIÓN ─── */
 var deferredPrompt = null;
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js').catch(function(err) {
-            console.log('SW error:', err);
-        });
+        navigator.serviceWorker.register('sw.js');
     });
 }
 
@@ -94,13 +92,6 @@ function iniciarInstalacion() {
             }
             deferredPrompt = null;
         });
-    } else {
-        var esStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        if (esStandalone) {
-            mostrarToast('La aplicación ya está instalada');
-        } else {
-            mostrarToast('Toca los tres puntos (⋮) de Chrome y elige "Instalar"');
-        }
     }
 }
 
@@ -152,7 +143,7 @@ function aplicarTemaOscuro(activar) {
 
 inicializarTema();
 
-/* ─── PROCESAMIENTO Y PARSEO ─── */
+/* ─── UTILIDADES ─── */
 function limpiarClave(texto) {
     if (!texto) return '';
     return texto.toString().replace(/[\s\-_&.]/g, '').toUpperCase().trim();
@@ -213,10 +204,7 @@ function cargarDatos() {
         btn.disabled = true;
     }
 
-    // Agregar timestamp para obligar a Google Sheets a enviar los datos más recientes
-    var urlConTimestamp = CSV_URL_BASE + '&_t=' + new Date().getTime();
-
-    Papa.parse(urlConTimestamp, {
+    Papa.parse(CSV_URL, {
         download: true,
         header: true,
         skipEmptyLines: true,
@@ -248,7 +236,7 @@ function cargarDatos() {
                 localStorage.setItem('spg_eventos_cache', JSON.stringify(data));
                 renderizarEventos();
             } else {
-                mostrarToast('No se encontraron eventos en la hoja');
+                mostrarToast('No se encontraron eventos');
             }
         },
         error: function(err) {
@@ -260,9 +248,6 @@ function cargarDatos() {
             if (cached) {
                 todosLosEventos = JSON.parse(cached);
                 renderizarEventos();
-                mostrarToast('Usando datos guardados en memoria');
-            } else {
-                mostrarToast('Error al conectar con Google Sheets');
             }
         }
     });
@@ -506,7 +491,7 @@ function compartirApp() {
     var url = window.location.href;
     if (navigator.share) {
         navigator.share({
-            title: 'Guía Deportiva',
+            title: 'Programación Deportiva',
             text: 'Consulta la guía de eventos deportivos en vivo y próximos.',
             url: url
         }).catch(function() {});
@@ -529,7 +514,6 @@ function mostrarToast(mensaje) {
     }, 2500);
 }
 
-// Carga inicial y respaldo
 var cacheInicial = localStorage.getItem('spg_eventos_cache');
 if (cacheInicial) {
     try {
