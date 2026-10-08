@@ -1,12 +1,14 @@
 {
-  "name": "Programación Deportiva",
-  "short_name": "Deportes",
-  "description": "Programación deportiva y eventos en vivo",
-  "start_url": "index.html",
+  "name": "Tigo Sports Guía",
+  "short_name": "TS Guía",
+  "description": "Programación de partidos y eventos deportivos en vivo",
+  "id": "ts-guia-deportiva-live-2026",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#002089",
   "theme_color": "#0033bf",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-pwa.png",
