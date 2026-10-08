@@ -2,24 +2,21 @@
   "name": "Programación Deportiva",
   "short_name": "Deportes",
   "description": "Programación deportiva y eventos en vivo",
-  "start_url": "/programaci-n-deportiva/",
-  "scope": "/programaci-n-deportiva/",
+  "start_url": "index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#002089",
   "theme_color": "#0033bf",
-  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-pwa.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "icon-pwa.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
