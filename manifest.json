@@ -1,21 +1,25 @@
 {
-  "name": "Guía Deportiva",
+  "name": "Programación Deportiva",
   "short_name": "Deportes",
-  "description": "Programación y guía deportiva en vivo",
-  "start_url": "./",
+  "description": "Programación deportiva y eventos en vivo",
+  "start_url": "/programaci-n-deportiva/",
+  "scope": "/programaci-n-deportiva/",
   "display": "standalone",
   "background_color": "#002089",
   "theme_color": "#0033bf",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-pwa.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-pwa.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
