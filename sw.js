@@ -1,17 +1,15 @@
-var CACHE_NAME = 'prog-deportiva-v1';
-
-self.addEventListener('install', function(event) {
+self.addEventListener('install', function(e) {
   self.skipWaiting();
 });
 
-self.addEventListener('activate', function(event) {
-  event.waitUntil(self.clients.claim());
+self.addEventListener('activate', function(e) {
+  e.waitUntil(self.clients.claim());
 });
 
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    fetch(event.request).catch(function() {
-      return caches.match(event.request);
+self.addEventListener('fetch', function(e) {
+  e.respondWith(
+    fetch(e.request).catch(function() {
+      return caches.match(e.request);
     })
   );
 });
