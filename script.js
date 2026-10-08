@@ -16,7 +16,6 @@ var logos = {
     "T&CSPORTS": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/TyCSp.png"
 };
 
-// Grilla oficial HD en Tigo
 var canalesTigo = {
     "TS1": "Ch. 700",
     "TS2": "Ch. 701",
@@ -66,34 +65,24 @@ var meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct
 var todosLosEventos = [];
 var filtroCanalActual = 'TODOS';
 var textoBusquedaActual = '';
+
+/* ─── EL MOTOR ORIGINAL DE INSTALACIÓN (COMO AYER) ─── */
 var deferredPrompt = null;
 
-/* ─── LÓGICA DE INSTALACIÓN PWA ─── */
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js').catch(function(err) {
-            console.log('SW error:', err);
-        });
+        navigator.serviceWorker.register('sw.js');
     });
 }
 
 window.addEventListener('beforeinstallprompt', function(e) {
     e.preventDefault();
     deferredPrompt = e;
+    var btn = document.getElementById('btnInstalar');
+    if (btn) btn.style.display = 'inline-flex';
 });
 
-function esDispositivoIOS() {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-}
-
 function iniciarInstalacion() {
-    var esStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-    
-    if (esStandalone) {
-        mostrarToast('La aplicación ya está instalada');
-        return;
-    }
-
     if (deferredPrompt) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then(function(choiceResult) {
@@ -103,22 +92,14 @@ function iniciarInstalacion() {
             }
             deferredPrompt = null;
         });
-        return;
     }
-
-    if (esDispositivoIOS()) {
-        mostrarToast('En iPhone: toca Compartir (icono con flecha) y luego "Agregar a inicio"');
-        return;
-    }
-
-    mostrarToast('Toca los tres puntos (⋮) de Chrome y elige "Instalar" o "Agregar a inicio"');
 }
 
 window.addEventListener('appinstalled', function() {
     var btn = document.getElementById('btnInstalar');
     if (btn) btn.style.display = 'none';
     deferredPrompt = null;
-    mostrarToast('¡Aplicación instalada con éxito!');
+    mostrarToast('¡App instalada con éxito!');
 });
 
 /* ─── MODO OSCURO / NOCHE ─── */
@@ -162,7 +143,7 @@ function aplicarTemaOscuro(activar) {
 
 inicializarTema();
 
-/* ─── PROCESAMIENTO Y PARSEO ─── */
+/* ─── UTILIDADES ─── */
 function limpiarClave(texto) {
     if (!texto) return '';
     return texto.toString().replace(/[\s\-_&.]/g, '').toUpperCase().trim();
@@ -255,7 +236,7 @@ function cargarDatos() {
                 localStorage.setItem('spg_eventos_cache', JSON.stringify(data));
                 renderizarEventos();
             } else {
-                mostrarToast('No se encontraron filas con eventos');
+                mostrarToast('No se encontraron eventos');
             }
         },
         error: function(err) {
@@ -267,9 +248,6 @@ function cargarDatos() {
             if (cached) {
                 todosLosEventos = JSON.parse(cached);
                 renderizarEventos();
-                mostrarToast('Usando datos guardados');
-            } else {
-                mostrarToast('Error al conectar con la hoja');
             }
         }
     });
@@ -513,7 +491,7 @@ function compartirApp() {
     var url = window.location.href;
     if (navigator.share) {
         navigator.share({
-            title: 'Programación Deportiva',
+            title: 'Guía Deportiva',
             text: 'Consulta la guía de eventos deportivos en vivo y próximos.',
             url: url
         }).catch(function() {});
@@ -536,7 +514,6 @@ function mostrarToast(mensaje) {
     }, 2500);
 }
 
-// Carga inicial y respaldo
 var cacheInicial = localStorage.getItem('spg_eventos_cache');
 if (cacheInicial) {
     try {
