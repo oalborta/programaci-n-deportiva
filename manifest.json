@@ -1,12 +1,11 @@
 {
-  "name": "Programación Deportiva",
+  "name": "Guía Deportiva",
   "short_name": "Deportes",
-  "description": "Guía de eventos deportivos en vivo y próximos",
-  "start_url": "index.html",
+  "description": "Programación y guía deportiva en vivo",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#002089",
   "theme_color": "#0033bf",
-  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-pwa.png",
