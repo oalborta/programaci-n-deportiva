@@ -14,118 +14,407 @@
     <link rel="apple-touch-icon" href="GO.png">
     <link rel="icon" type="image/png" href="GO.png">
 
-    <!-- Previsualización para Redes y WhatsApp -->
-    <meta property="og:title" content="Programación Deportiva">
-    <meta property="og:description" content="Consulta los eventos deportivos en vivo y la programación de canales.">
-    <meta property="og:image" content="GO.png">
-    <meta property="og:type" content="website">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Programación Deportiva">
-    <meta name="twitter:description" content="Consulta los eventos deportivos en vivo y la programación de canales.">
-    <meta name="twitter:image" content="GO.png">
-
     <title>Programación Deportiva</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header class="navbar">
-        <div class="navbar-wrapper">
-            <div class="navbar-top">
-                <div class="brand-container">
-                    <img src="GO.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
-                    <div class="brand-info">
-                        <span class="brand-line-1">PROGRAMACIÓN</span>
-                        <span class="brand-line-2">DEPORTIVA</span>
-                    </div>
-                </div>
 
-                <div class="btn-group">
-                    <!-- Botón Instalar PWA -->
-                    <button id="btnInstalar" onclick="iniciarInstalacion()" class="btn-action btn-install" title="Instalar en pantalla">
-                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        <span class="btn-text">Instalar</span>
-                    </button>
+    <style>
+        :root {
+            /* Tema Claro */
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --text-h2: #888888;
+            --border-card: #f0f0f0;
+            --border-item: #f5f5f5;
+            --hover-item: #f8faff;
+            --nav-bg: linear-gradient(180deg, #0033bf 0%, #002089 100%);
+            --nav-shadow: rgba(0, 32, 137, 0.4);
+            --input-bg: rgba(255, 255, 255, 0.95);
+            --input-color: #111111;
+            --input-icon: #666666;
+            --badge-num-bg: #e1e9ff;
+            --badge-num-color: #002089;
+            --separador-color: #0033bf;
+            --separador-border: #e1e9ff;
+            --btn-recordar-bg: #eaf1ff;
+            --btn-recordar-border: #d4e2ff;
+            --btn-recordar-color: #0033bf;
+            --card-shadow: rgba(0, 0, 0, 0.04);
+            --vivo-card-bg: #fff5f5;
+            --vivo-card-border: #ffd8d6;
+        }
 
-                    <!-- Botón Modo Oscuro / Claro -->
-                    <button onclick="alternarModoOscuro()" id="btnTema" class="btn-action" title="Cambiar tema">
-                        <svg id="iconoTema" class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                        <span id="txtTema" class="btn-text">Noche</span>
-                    </button>
+        /* Tema Oscuro */
+        body.dark-mode {
+            --bg-body: #0b1120;
+            --bg-card: #151e32;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-h2: #64748b;
+            --border-card: #1e293b;
+            --border-item: #1e293b;
+            --hover-item: #1e293b;
+            --nav-bg: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+            --nav-shadow: rgba(0, 0, 0, 0.6);
+            --input-bg: #1e293b;
+            --input-color: #f8fafc;
+            --input-icon: #94a3b8;
+            --badge-num-bg: #1e3a8a;
+            --badge-num-color: #93c5fd;
+            --separador-color: #60a5fa;
+            --separador-border: #1e3a8a;
+            --btn-recordar-bg: #1e293b;
+            --btn-recordar-border: #334155;
+            --btn-recordar-color: #60a5fa;
+            --card-shadow: rgba(0, 0, 0, 0.4);
+            --vivo-card-bg: #271418;
+            --vivo-card-border: #4c1d24;
+        }
 
-                    <!-- Botón Recargar -->
-                    <button onclick="cargarDatos()" id="btnRecargar" class="btn-action" title="Recargar eventos">
-                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                        </svg>
-                        <span class="btn-text">Recargar</span>
-                    </button>
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
 
-                    <!-- Botón Compartir -->
-                    <button onclick="compartirApp()" id="btnCompartir" class="btn-action" title="Compartir enlace">
-                        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"/>
-                            <circle cx="6" cy="12" r="3"/>
-                            <circle cx="18" cy="19" r="3"/>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                        </svg>
-                        <span class="btn-text">Compartir</span>
-                    </button>
-                </div>
-            </div>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            margin: 0;
+            padding-top: 200px;
+            padding-bottom: 60px;
+            color: var(--text-main);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
 
-            <!-- Fila interactiva: buscador y filtros -->
-            <div class="navbar-controles">
-                <div class="search-box">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input type="text" id="inputBuscar" placeholder="Buscar equipo, torneo o deporte..." oninput="filtrarEventos()">
-                    <button id="btnLimpiarBusqueda" onclick="limpiarBusqueda()" style="display:none;">✕</button>
-                </div>
+        /* ─── NAVBAR ─── */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            padding: 10px 14px 8px 14px;
+            z-index: 100;
+            box-shadow: 0 4px 20px var(--nav-shadow);
+            transition: background 0.3s ease;
+        }
 
-                <div class="chips-container">
-                    <button class="chip active" onclick="filtrarCanal('TODOS', this)">Todos</button>
-                    <button class="chip" onclick="filtrarCanal('VIVO', this)">🔴 En Vivo</button>
-                    <button class="chip" onclick="filtrarCanal('TS', this)">Tigo Sports</button>
-                    <button class="chip" onclick="filtrarCanal('ESPN', this)">ESPN</button>
-                    <button class="chip" onclick="filtrarCanal('DSPORTS', this)">DSports</button>
-                    <button class="chip" onclick="filtrarCanal('TYC', this)">TyC Sports</button>
-                </div>
-            </div>
+        .navbar-wrapper {
+            max-width: 920px;
+            margin: 0 auto;
+            width: 100%;
+        }
 
-            <p class="texto-legal">Programación sujeta a cambios</p>
-        </div>
-    </header>
+        .navbar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
 
-    <main class="main-container">
-        <section id="ahora" class="bloque">
-            <h2>En vivo</h2>
-            <div class="lista"></div>
-        </section>
-        <section id="hoy" class="bloque">
-            <h2>Hoy</h2>
-            <div class="lista"></div>
-        </section>
-        <section id="proximos" class="bloque">
-            <h2>Próximos eventos</h2>
-            <div class="lista"></div>
-        </section>
-    </main>
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
 
-    <div id="toastMessage" class="toast">Enlace copiado al portapapeles</div>
+        .brand-logo {
+            height: 42px;
+            width: auto;
+            max-width: 70px;
+            object-fit: contain;
+            display: block;
+        }
 
-    <footer class="footer">Programación Deportiva © 2026</footer>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.05;
+        }
+
+        .brand-line-1 {
+            font-size: 0.95rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+        }
+
+        .brand-line-2 {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #63a7f8;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .texto-legal {
+            font-size: 0.58rem;
+            color: rgba(255, 255, 255, 0.65);
+            margin: 4px 0 0 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-align: right;
+        }
+
+        /* ─── BOTONES SUPERIORES ─── */
+        .btn-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            color: #ffffff;
+            padding: 6px 9px;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.28);
+        }
+
+        .btn-install {
+            background: #00e676;
+            color: #002089;
+            border-color: #00e676;
+        }
+
+        .btn-install:hover {
+            background: #00c853;
+        }
+
+        .icon-svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        .is-loading .icon-svg {
+            animation: rotar 0.8s linear infinite;
+        }
+
+        @keyframes rotar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ─── BUSCADOR Y CHIPS ─── */
+        .navbar-controles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-box {
+            position: relative;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 32px;
+            border-radius: 20px;
+            border: 1px solid transparent;
+            background: var(--input-bg);
+            font-size: 0.82rem;
+            color: var(--input-color);
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark-mode .search-box input {
+            border-color: #334155;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 11px;
+            width: 15px;
+            height: 15px;
+            stroke: var(--input-icon);
+        }
+
+        #btnLimpiarBusqueda {
+            position: absolute;
+            right: 9px;
+            background: none;
+            border: none;
+            color: var(--input-icon);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .chips-container {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 7px 0 2px 0;
+            scrollbar-width: none;
+        }
+
+        .chips-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            padding: 5px 11px;
+            border-radius: 16px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip.active {
+            background: #63a7f8;
+            color: #002089;
+            border-color: #63a7f8;
+        }
+
+        /* ─── CONTENEDOR PRINCIPAL ─── */
+        .main-container {
+            max-width: 920px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        .bloque {
+            margin: 14px 0;
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 2px 10px var(--card-shadow);
+            border: 1px solid var(--border-card);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        h2 {
+            font-size: 0.65rem;
+            color: var(--text-h2);
+            margin: 0 0 12px 0;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 800;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-card);
+        }
+
+        .separador-dia {
+            font-size: 0.72rem;
+            color: var(--separador-color);
+            font-weight: 800;
+            padding: 12px 8px 6px 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--separador-border);
+            margin-bottom: 5px;
+        }
+
+        .sin-eventos {
+            text-align: center;
+            padding: 24px 10px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* ─── TARJETAS DE EVENTOS ─── */
+        .evento {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-item);
+            gap: 10px;
+            transition: background 0.15s ease;
+            border-radius: 8px;
+        }
+
+        .evento:hover {
+            background: var(--hover-item);
+        }
+
+        .evento:last-child {
+            border-bottom: none;
+        }
+
+        .col-logo {
+            min-width: 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            gap: 3px;
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .canal-numero {
+            font-size: 0.58rem;
+            font-weight: 800;
+            color: var(--badge-num-color);
+            background: var(--badge-num-bg);
+            padding: 1px 5px;
+            border-radius: 4px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .badge {
+            font-size: 0.55rem;
+            width: 38px;
+            height: 38px;
+            background: var(--border-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .evento-info {
+            flex-grow: 1;
+        }
+
+        .evento strong {
+            font-size: 0.88rem;
+            color: var(--text-main);
+            display: block;
+            line-height: 1.25;
+        }
+
+        .evento-info small {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 500;
+        }
+
+        .hora-destacada {
