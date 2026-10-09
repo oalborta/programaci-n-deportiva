@@ -56,6 +56,8 @@ var logosTorneo = {
     "CONMEBOL SUB-20 FUTSAL 2026": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/futsal_sub_20.png",
     "EFL CHAMPIONSHIP": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/EFL-Championship-v2016.png",
     "LIGUE 1": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/Ligue_1.png",
+    "ATP M1000 SHANGAI": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/ATP1000.png",
+    "UEFA EUROPA LEAGUE": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/uefa_europa_league.png",
     "WIMBLEDON": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/wimbledon.png"
 };
 
