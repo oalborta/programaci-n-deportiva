@@ -1,4 +1,4 @@
-var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpWDOBhG0TjMrBBi1EYQ8fjdlqTKYOV5PZqlgPrm_Pp8qLE-kcX_QoGPLZTofZ7W1JNYHEpBfLvlLL/pub?output=csv';
+var CSV_URL = 'https://docs.google.com/spreadsheets/d/10gCDP-vgpRCV3t3uhmuOE-rp91WWp7wTPR-bDwdyKow/export?format=csv';
 
 var logos = {
     "ESPN": "https://raw.githubusercontent.com/oalborta/programaci-n-deportiva/main/espn.png",
@@ -149,10 +149,20 @@ function limpiarClave(texto) {
     return texto.toString().replace(/[\s\-_&.]/g, '').toUpperCase().trim();
 }
 
+function limpiarHora(hStr) {
+    if (!hStr) return '';
+    var partes = hStr.toString().trim().split(':');
+    if (partes.length >= 2) {
+        var h = partes[0].padStart(2, '0');
+        var m = partes[1].padStart(2, '0');
+        return h + ':' + m;
+    }
+    return hStr.toString().trim();
+}
+
 function parsearFecha(fechaStr) {
     if (!fechaStr) return null;
-    var limpia = fechaStr.toString().trim().split(' ')[0];
-    var partes = limpia.split(/[-/]/);
+    var partes = fechaStr.toString().trim().split(' ')[0].split(/[-/]/);
     if (partes.length !== 3) return null;
 
     var anio, mes, dia;
@@ -198,7 +208,7 @@ function obtenerNumeroCanalTigo(nombreCanal) {
     return '';
 }
 
-/* ─── CARGA CON PAPAPARSE DIRECTO ─── */
+/* ─── CARGA DE DATOS ─── */
 function cargarDatos() {
     var btn = document.getElementById('btnRecargar');
     if (btn) {
@@ -226,8 +236,8 @@ function cargarDatos() {
 
                     if (k === 'evento' || k === 'partido' || k === 'nombre') item.Evento = fila[key];
                     if (k === 'fecha' || k === 'dia') item.Fecha = fila[key];
-                    if (k === 'horainicio' || k === 'inicio' || k === 'hora') item.Hora_Inicio = fila[key];
-                    if (k === 'horafin' || k === 'fin') item.Hora_Fin = fila[key];
+                    if (k === 'horainicio' || k === 'inicio' || k === 'hora') item.Hora_Inicio = limpiarHora(fila[key]);
+                    if (k === 'horafin' || k === 'fin') item.Hora_Fin = limpiarHora(fila[key]);
                     if (k === 'canal' || k === 'senal') item.Canal = fila[key];
                     if (k === 'torneo' || k === 'liga' || k === 'campeonato') item.Torneo = fila[key];
                 }
@@ -242,16 +252,11 @@ function cargarDatos() {
                 localStorage.setItem('spg_eventos_cache', JSON.stringify(lista));
                 renderizarEventos();
             } else {
-                mostrarToast('Se leyó la hoja pero no se detectaron filas válidas');
-                var cached = localStorage.getItem('spg_eventos_cache');
-                if (cached) {
-                    todosLosEventos = JSON.parse(cached);
-                    renderizarEventos();
-                }
+                mostrarToast('No se encontraron filas con eventos');
             }
         },
         error: function(err) {
-            console.error('Error PapaParse:', err);
+            console.error('Error cargando CSV:', err);
             if (btn) {
                 btn.classList.remove('is-loading');
                 btn.disabled = false;
@@ -260,9 +265,8 @@ function cargarDatos() {
             if (cached) {
                 todosLosEventos = JSON.parse(cached);
                 renderizarEventos();
-                mostrarToast('Usando datos de respaldo');
             } else {
-                mostrarToast('Error al conectar con la hoja de cálculo');
+                mostrarToast('Error al conectar con la hoja');
             }
         }
     });
@@ -517,6 +521,7 @@ function mostrarToast(mensaje) {
     }, 2500);
 }
 
+// Carga inicial
 var cacheInicial = localStorage.getItem('spg_eventos_cache');
 if (cacheInicial) {
     try {
